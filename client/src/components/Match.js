@@ -45,17 +45,19 @@ const Match = () => {
       }
       const boardData = await response.json();
       setBoard(boardData);
+      setMessage("");
     } catch (error) {
       console.error(`Error in fetch: ${error}`);
     }
   };
 
-  useEffect(() => {
-    
-  }, []);
+  const messageSpace = message ? (
+    <h3>{message}</h3>
+  ) : null;
 
   return (
     <div className="Match">
+      {messageSpace}
       <div className="Board-wrapper">
         <Board {...board}/>
       </div>
