@@ -12,3 +12,57 @@
   -moz-tab-size: 4;
   tab-size: 4;
 }
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Opera and Firefox */
+}
+
+.Board-wrapper {
+  height: 324px;
+  width: 324px;
+  margin: 30px auto;
+  border: solid 2px black;
+}
+
+.Board {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+}
+
+.board-row {
+  list-style: none;
+  display: flex;
+  margin: 0;
+  justify-content: center;
+}
+
+.Tile {
+  width: 40px;
+  height: 40px;
+}
+
+.Tile.black {
+  background-color: black;
+  color: white;
+}
+
+.Tile:hover {
+  background-color: green;
+}
+
+.Tile:active {
+  background-color: yellow;
+}
+
+.Tile p {
+  text-align: center;
+  line-height: 40px;
+  margin: auto;
+}
