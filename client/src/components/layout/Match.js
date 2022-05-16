@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Board from "./Board";
+import Board from "../Board";
 import socketIO from "socket.io-client";
 const ENDPOINT = "http://localhost:3000";
 
@@ -52,13 +52,13 @@ const Match = () => {
   };
 
   const messageSpace = message ? (
-    <h3>{message}</h3>
+    <h3 className="message">{message}</h3>
   ) : null;
 
   return (
     <div className="Match">
-      {messageSpace}
       <div className="Board-wrapper">
+        {messageSpace}
         <Board {...board}/>
       </div>
     </div>

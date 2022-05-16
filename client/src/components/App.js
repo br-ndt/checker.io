@@ -3,12 +3,13 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { hot } from "react-hot-loader/root";
 
 import getCurrentUser from "../services/getCurrentUser";
-import "../assets/scss/main.scss";
 import RegistrationForm from "./registration/RegistrationForm";
 import SignInForm from "./authentication/SignInForm";
 import TopBar from "./layout/TopBar";
 import SocketClock from "./SocketClock";
-import Match from "./Match";
+import Match from "./layout/Match";
+
+import "../assets/scss/main.scss";
 
 const App = (props) => {
   const [currentUser, setCurrentUser] = useState(undefined);

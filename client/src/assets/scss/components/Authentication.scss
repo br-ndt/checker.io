@@ -1,0 +1,27 @@
+.RegistrationForm, .SignInForm {
+  padding-top: 20px;
+  max-width: 640px;
+  color: $light-grey;
+
+  label {
+    color: $light-grey;
+  }
+
+  input {
+    border-radius: 5px;
+    background-color: $black;
+
+    &[type=submit]:hover {
+      background-color: $light-grey;
+    }
+
+    &[type=submit]:active {
+      background-color: $black;
+    }
+
+    &:focus {
+      background-color: $black;
+      color: white;
+    }
+  }
+}

@@ -1,0 +1,12 @@
+.Match {
+  .message {
+    color: $light-grey;
+  }
+  .Board-wrapper {
+    height: 484px;
+    width: 484px;
+    margin: 30px auto;
+    border: solid 2px $light-grey;
+    box-shadow: 5px 10px 5px rgba(0, 0, 0, 0.477);
+  }
+}

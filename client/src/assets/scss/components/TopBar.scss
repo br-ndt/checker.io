@@ -1,0 +1,60 @@
+@import "./colors.scss";
+
+.TopBar {
+  background-color: $black;
+
+  .menu {
+    background-color: $black;
+
+    .menu-text, .menu-text a {
+      background-color: $black;
+      color: $light-grey;
+
+      &:hover {
+        color: white;
+      }
+
+      &:active {
+        color: darken($light-grey, 30%);
+      }
+    }
+
+    .menu-button {
+      border-radius: 5px;
+
+      &.left a {
+        border-radius: 5px 0 0 5px;
+      }
+
+      &.right a {
+        border-radius: 0 5px 5px 0;
+      }
+
+      a {
+        background-color: $dark-grey;
+        color: white;
+
+        &:hover {
+          background-color: lighten($dark-grey, 5%);
+        }
+
+        &:active {
+          background-color: darken($dark-grey, 5%);
+        }
+      }
+
+      &.white a {
+        background-color: $light-grey;
+        color: $black;
+
+        &:hover {
+          background-color: white;
+        }
+
+        &:active {
+          background-color: darken($light-grey, 30%);
+        }
+      }
+    }
+  }
+}

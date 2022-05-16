@@ -66,7 +66,7 @@ const SignInForm = () => {
   }
 
   return (
-    <div className="grid-container" onSubmit={onSubmit}>
+    <div className="grid-container SignInForm" onSubmit={onSubmit}>
       <h1>Sign In</h1>
       <form>
         <div>

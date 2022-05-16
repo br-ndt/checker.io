@@ -7,7 +7,7 @@ const BoardRow = ({ index, row, tileClick }) => {
     ++colorIndex;
     return (
       <Tile
-        color={colorIndex % 2 ? "black" : "white"}
+        color={colorIndex % 2 ? "white" : "black"}
         key={`tile-${tile.x}-${tile.y}`}
         x={tile.x}
         y={tile.y}
