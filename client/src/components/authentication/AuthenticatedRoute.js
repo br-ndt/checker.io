@@ -6,7 +6,8 @@ const AuthenticationCheck = ({ component: Component, user }) => {
     return <div>Loading...</div>
   }
   if (user !== null) {
-    return <Component />;
+    return <Component user={user}
+    />;
   }
   return <Redirect to="/user-sessions/new" />;
 };

@@ -10,6 +10,7 @@
   input {
     border-radius: 5px;
     background-color: $black;
+    color: white;
 
     &[type=submit]:hover {
       background-color: $light-grey;
@@ -19,7 +20,7 @@
       background-color: $black;
     }
 
-    &:focus {
+    &:focus, &:-internal-autofill-selected {
       background-color: $black;
       color: white;
     }

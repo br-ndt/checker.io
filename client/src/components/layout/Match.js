@@ -1,43 +1,58 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import Board from "../Board";
 import socketIO from "socket.io-client";
 import canMovePawn from "../../services/canMovePawn.js";
-const ENDPOINT = "http://localhost:3000";
+const ENDPOINT =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:3000"
+    : "https://checker.io.herokuapp.com/";
 
 const defaultBoard = {
+  id: "0",
   width: 8,
   height: 8,
   rows: [[]],
 };
 
-const Match = () => {
+const Match = ({ user }) => {
+  const socket = useRef(socketIO(ENDPOINT));
   const [message, setMessage] = useState("connecting...");
   const [board, setBoard] = useState(defaultBoard);
 
   useEffect(() => {
     fetchBoard();
+  }, []);
 
-    const socket = socketIO(ENDPOINT);
-    let socketTimeout;
-    socket.on("connect", () => console.log(socket.id, " connected"));
-    socket.on("connect_error", () => {
-      socketTimeout = setTimeout(() => socket.connect(), 5000);
-    });
-    socket.on("boardUpdate", (data) => {
+  useEffect(() => {
+    if (user && board.id != 0) {
+      let socketTimeout;
+      socket.current.emit("addUser", { user: user.id, room: board.id }, () =>
+        console.log(`User ${user.id} logged into room ${board.id}`)
+      );
+
+      socket.current.on("getUsers", (users) => console.log("Current users", users));
+      socket.current.on("connect_error", () => {
+        socketTimeout = setTimeout(() => socket.current.connect(), 5000);
+      });
+      socket.current.on("disconnect", () => {
+        setMessage("server disconnected");
+        setBoard(defaultBoard);
+      });
+
+      return () => {
+        console.log(socket.current.id, " disconnected");
+        if (socketTimeout) clearTimeout(socketTimeout);
+        socket.current.disconnect();
+      };
+    }
+  }, [board.id]);
+
+  useEffect(() => {
+    socket.current.on("boardUpdate", (data) => {
       setBoard(data);
     });
-    socket.on("disconnect", () => {
-      setMessage("server disconnected");
-      setBoard(defaultBoard);
-    });
-
-    return () => {
-      console.log(socket.id, " disconnected");
-      if (socketTimeout) clearTimeout(socketTimeout);
-      socket.disconnect();
-    };
   }, []);
 
   const fetchBoard = async () => {
@@ -55,7 +70,7 @@ const Match = () => {
   };
 
   const movePawn = (fromTile, toTile, pawn) => {
-    if(canMovePawn(fromTile, toTile)) {
+    if (canMovePawn(fromTile, toTile)) {
       const alteredRows = board.rows.map((row) => {
         return row.map((tile) => {
           if (tile.x === toTile.x && tile.y === toTile.y) {
@@ -77,7 +92,7 @@ const Match = () => {
       <DndProvider backend={HTML5Backend}>
         <div className="Board-wrapper">
           {messageSpace}
-          <Board {...board} movePawnCallback={movePawn}/>
+          <Board {...board} movePawnCallback={movePawn} />
         </div>
       </DndProvider>
     </div>

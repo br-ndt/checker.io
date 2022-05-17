@@ -19,7 +19,7 @@
       }
     }
 
-    .menu-button {
+    .menu-button, {
       border-radius: 5px;
 
       &.left a {
@@ -30,12 +30,16 @@
         border-radius: 0 5px 5px 0;
       }
 
-      a {
+      button {
+        border-radius: 5px;
+      }
+
+      a, button {
         background-color: $dark-grey;
         color: white;
 
         &:hover {
-          background-color: lighten($dark-grey, 5%);
+          background-color: lighten($dark-grey, 10%);
         }
 
         &:active {

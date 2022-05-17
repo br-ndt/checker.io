@@ -87,7 +87,8 @@ const RegistrationForm = () => {
 
   return (
     <div className="grid-container RegistrationForm">
-      <h1>Register</h1>
+      <h1>Welcome to checker.io!</h1>
+      <h3>Please register in order to play</h3>
       <form onSubmit={onSubmit}>
         <div>
           <label>
