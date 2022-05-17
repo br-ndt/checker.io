@@ -88,6 +88,10 @@ module.exports = {
       "@Providers": path.resolve(__dirname, "src/providers/"),
     },
     extensions: ["*", ".js", ".scss"],
+    fallback: {
+      "react/jsx-runtime": "react/jsx-runtime.js",
+      "react/jsx-dev-runtime": "react/jsx-dev-runtime.js",
+    },
   },
   output: {
     path: path.resolve(__dirname, "../server/public/dist"),

@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 import Board from "../Board";
 import socketIO from "socket.io-client";
+import canMovePawn from "../../services/canMovePawn.js";
 const ENDPOINT = "http://localhost:3000";
 
 const defaultBoard = {
@@ -15,7 +18,7 @@ const Match = () => {
 
   useEffect(() => {
     fetchBoard();
-    
+
     const socket = socketIO(ENDPOINT);
     let socketTimeout;
     socket.on("connect", () => console.log(socket.id, " connected"));
@@ -51,18 +54,34 @@ const Match = () => {
     }
   };
 
-  const messageSpace = message ? (
-    <h3 className="message">{message}</h3>
-  ) : null;
+  const movePawn = (fromTile, toTile, pawn) => {
+    if(canMovePawn(fromTile, toTile)) {
+      const alteredRows = board.rows.map((row) => {
+        return row.map((tile) => {
+          if (tile.x === toTile.x && tile.y === toTile.y) {
+            tile.pawn = pawn;
+          } else if (tile.x === fromTile.x && tile.y === fromTile.y) {
+            delete tile.pawn;
+          }
+          return tile;
+        });
+      });
+      setBoard({ ...board, rows: alteredRows });
+    }
+  };
+
+  const messageSpace = message ? <h3 className="message">{message}</h3> : null;
 
   return (
     <div className="Match">
-      <div className="Board-wrapper">
-        {messageSpace}
-        <Board {...board}/>
-      </div>
+      <DndProvider backend={HTML5Backend}>
+        <div className="Board-wrapper">
+          {messageSpace}
+          <Board {...board} movePawnCallback={movePawn}/>
+        </div>
+      </DndProvider>
     </div>
-  )
-}
+  );
+};
 
 export default Match;

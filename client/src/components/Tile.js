@@ -1,28 +1,34 @@
 import React from "react";
 import Pawn from "./Pawn";
+import itemTypes from "../constants/itemTypes.js";
+import { useDrop } from "react-dnd";
+import canMovePawn from "../services/canMovePawn";
 
-const Tile = ({ color, x, y, tileClick }) => {
-  const redPawn = x === 2 && y === 7 ? (
-    <Pawn color="red"/>
-  ) : null;
+const Tile = ({ x, y, pawnHere, movePawnCallback }) => {
+  const color = (x + y) % 2 === 1 ? "black" : "white";
+  const [{ isOver, canDrop }, drop] = useDrop(
+    () => ({
+      accept: itemTypes.PAWN,
+      drop: (item) => {
+        movePawnCallback({ x: item.x, y: item.y }, { x, y, pawn: pawnHere ? true : false }, item);
+      },
+      canDrop: (item) => canMovePawn({ x: item.x, y: item.y }, { x, y, pawn: pawnHere ? true : false }),
+      collect: (monitor) => ({
+        isOver: !!monitor.isOver(),
+        canDrop: !!monitor.canDrop()
+      }),
+    }),
+    [x, y, pawnHere]
+  );
 
-  const whitePawn = x === 4 && y === 3 ? (
-    <Pawn color="white"/>
-  ) : null;
+  const thisPawn = pawnHere ? <Pawn x={x} y={y} color={pawnHere.color} /> : null;
 
   return (
-    <li
-      onClick={(event) => {
-        event.preventDefault();
-        tileClick(x, y);
-      }}
-      className={`Tile ${color}`}
-    >
-      {/* <p className="noselect">
-        {x},{y}
-      </p> */}
-      {redPawn}
-      {whitePawn}
+    <li ref={drop} className={`Tile ${color}`}>
+      {thisPawn}
+      {isOver && !canDrop && <div className="drop-highlight red" />}
+      {!isOver && canDrop && <div className="drop-highlight yellow" />}
+      {isOver && canDrop && <div className="drop-highlight green" />}
     </li>
   );
 };
