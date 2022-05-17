@@ -5,15 +5,8 @@
   border: 2px solid black;
   box-shadow: 2px 4px 2px rgba(0, 0, 0, 0.477);
   margin: auto;
-
-  .img-overlay {
-    background-image: $pawn-img;
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    background-size: contain;
-  }
+  background-color: $red;
+  cursor: move;
 
   &:hover {
     box-shadow: 0 0 4px 4px $gold;
@@ -24,10 +17,23 @@
   }
 
   &.red {
-    background-color: red;
+    background-color: $red;
   }
 
   &.white {
     background-color: white;
+  }
+
+  &.dragging {
+    opacity: 0.5;
+  }
+
+  .img-overlay {
+    background-image: $pawn-img;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-size: contain;
   }
 }

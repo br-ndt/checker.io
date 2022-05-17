@@ -1,17 +1,15 @@
 import React from "react";
 import Tile from "./Tile";
 
-const BoardRow = ({ index, row, tileClick }) => {
-  let colorIndex = index;
-  return row.map((tile) => {
-    ++colorIndex;
+const BoardRow = ({ row, movePawnCallback }) => {
+  return row.map(tile => {
     return (
       <Tile
-        color={colorIndex % 2 ? "white" : "black"}
         key={`tile-${tile.x}-${tile.y}`}
+        movePawnCallback={movePawnCallback}
         x={tile.x}
         y={tile.y}
-        tileClick={tileClick}
+        pawnHere={tile.pawn}
       />
     );
   });
