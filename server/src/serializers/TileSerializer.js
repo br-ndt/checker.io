@@ -2,7 +2,7 @@ import PawnSerializer from "./PawnSerializer.js";
 
 class TileSerializer {
   static async getSummary(tile) {
-    const allowedAttributes = ["x", "y"];
+    const allowedAttributes = ["id", "x", "y"];
     let serializedTile = {};
     for(const attribute of allowedAttributes) {
       serializedTile[attribute] = tile[attribute];

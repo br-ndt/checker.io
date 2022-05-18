@@ -3,8 +3,9 @@ import Pawn from "./Pawn";
 import itemTypes from "../../constants/itemTypes.js";
 import { useDrop } from "react-dnd";
 import canMovePawn from "../../services/canMovePawn";
+import DraggablePawn from "./DraggablePawn";
 
-const Tile = ({ x, y, pawnHere, movePawnCallback }) => {
+const Tile = ({ id, x, y, pawnHere, movePawnCallback, clientColor }) => {
   const color = (x + y) % 2 === 1 ? "black" : "white";
   const [{ isOver, canDrop }, drop] = useDrop(
     () => ({
@@ -12,16 +13,25 @@ const Tile = ({ x, y, pawnHere, movePawnCallback }) => {
       drop: (item) => {
         movePawnCallback({ x: item.x, y: item.y }, { x, y, pawn: pawnHere ? true : false }, item);
       },
-      canDrop: (item) => canMovePawn({ x: item.x, y: item.y }, { x, y, pawn: pawnHere ? true : false }),
+      canDrop: (item) =>
+        canMovePawn({ x: item.x, y: item.y }, { x, y, pawn: pawnHere ? true : false }),
       collect: (monitor) => ({
         isOver: !!monitor.isOver(),
-        canDrop: !!monitor.canDrop()
+        canDrop: !!monitor.canDrop(),
       }),
     }),
     [x, y, pawnHere]
   );
 
-  const thisPawn = pawnHere ? <Pawn x={x} y={y} color={pawnHere.color} /> : null;
+  let thisPawn = null;
+  if (pawnHere) {
+    thisPawn =
+      clientColor === pawnHere.color ? (
+        <DraggablePawn tileId={id} x={x} y={y} color={pawnHere.color} />
+      ) : (
+        <Pawn color={pawnHere.color} />
+      );
+  }
 
   return (
     <li ref={drop} className={`Tile ${color}`}>

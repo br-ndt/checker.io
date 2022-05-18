@@ -18,9 +18,10 @@ import {
   deleteUser,
   getUsers,
   getUsersInRoom,
-  removeUserFromRoom
+  removeUserFromRoom,
 } from "./services/users.js";
-import { createMatch, getMatch } from "./services/matchmaking.js";
+import { createMatch, getMatch, joinMatch } from "./services/matchmaking.js";
+import { movePawn } from "./services/game.js";
 
 const __filename = fileURLToPath(import.meta.url);
 
@@ -75,7 +76,7 @@ io.use((socket, next) => {
 });
 
 io.on("connection", (socket) => {
-  if (!socket.request.user ) {
+  if (!socket.request.user) {
     console.log(`Socket ${socket.id} is not associated with any user, closing connection...`);
     socket.disconnect();
     return;
@@ -86,41 +87,74 @@ io.on("connection", (socket) => {
   });
 
   socket.on("addUser", async (callback) => {
-    const user = await addUser(socket);
-    if(user) {
-      console.log("New user connection:", user);
-      io.emit("getUsers", getUsers(), "server-wide");
-      callback();
+    try {
+      const user = await addUser(socket);
+      if (user) {
+        console.log("New user connection:", user);
+        io.emit("getUsers", getUsers(), "server-wide");
+        callback();
+      }
+    } catch (error) {
+      console.error(error);
     }
   });
 
   socket.on("createMatch", async (user, callback) => {
-    const matchId = await createMatch(getUser(user.id));
-    if(matchId) {
-      console.log(`Match ${matchId} created`);
-      callback(matchId);
+    try {
+      const matchId = await createMatch(getUser(user.id));
+      if (matchId) {
+        console.log(`Match ${matchId} created`);
+        callback(matchId);
+      }
+    } catch (error) {
+      console.error(error);
     }
   });
 
   socket.on("userJoinMatchRoom", async (id, room, callback) => {
-    const user = getUser(id);
-    if(user) {
-      const matchRoom = await addUserToMatchRoom(user, room);
-      if(matchRoom) {
-        console.log(`${user.userModel.username}-${user.socketId}-${user.userModel.id} successfully joined room ${matchRoom}`)
-        socket.join(matchRoom);
-        io.in(matchRoom).emit("notification", {
-          title: "A user has joined",
-          description: `${user.userModel.username} just entered the room`,
-        });
-        io.in(matchRoom).emit("getUsers", getUsersInRoom(room), `room ${room}`);
-        const match = await getMatch(matchRoom);
-        callback(match);
+    try {
+      const user = getUser(id);
+      if (user) {
+        const matchRoom = await addUserToMatchRoom(user, room);
+        if (matchRoom) {
+          console.log(
+            `${user.userModel.username}-${user.socketId}-${user.userModel.id} successfully joined room ${matchRoom}`
+          );
+          socket.join(matchRoom);
+          io.in(matchRoom).emit("notification", {
+            title: "A user has joined",
+            description: `${user.userModel.username} just entered the room`,
+          });
+          io.in(matchRoom).emit("getUsers", getUsersInRoom(room), `room ${room}`);
+          const match = await getMatch(matchRoom);
+          if (match.player2 === "None" && match.player1.id !== user.userModel.id) {
+            match.player2 = await joinMatch(user.userModel.id, match.id);
+            if (match.player2) {
+              io.in(matchRoom).emit("notification", {
+                title: "A challenger approaches",
+                description: `${user.userModel.username} is now the Red Player`,
+              });
+            }
+          }
+          callback(match);
+        }
       }
+    } catch (error) {
+      console.error(error);
     }
   });
 
-  socket.on("playerMovesPawn", async (roomId, user, board, callback) => {});
+  socket.on("playerMovesPawn", async (roomId, user, match, callback) => {
+    try {
+      const newBoard = await movePawn(socket.id, roomId, user, match);
+      if(newBoard) {
+        io.in(roomId).emit("boardUpdate", match);
+        callback("Board was updated");
+      }   
+    } catch (error) {
+      console.error(error);
+    }
+  });
 
   socket.on("sendMessage", (message) => {
     const user = getUser(socket.id);
@@ -132,7 +166,9 @@ io.on("connection", (socket) => {
     const user = deleteUser(socket.id);
     const prevRoom = removeUserFromRoom(user);
     if (prevRoom) {
-      console.log(`${user.userModel.username}-${user.socketId}-${user.userModel.id} successfully left Room ${prevRoom}.`)
+      console.log(
+        `${user.userModel.username}-${user.socketId}-${user.userModel.id} successfully left Room ${prevRoom}.`
+      );
       io.in(prevRoom).emit("notification", {
         title: "A user has left",
         description: `${user.userModel.username} just left the room`,

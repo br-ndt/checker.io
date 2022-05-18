@@ -1,6 +1,6 @@
 const Model = require("./Model.js");
 
-class MatchPlayers extends Model {
+class MatchPlayer extends Model {
   static get tableName() {
     return "matchPlayers";
   }
@@ -19,7 +19,7 @@ class MatchPlayers extends Model {
         relation: Model.BelongsToOneRelation,
         modelClass: require("./User.js"),
         join: {
-          from: "userPlayers.userId",
+          from: "matchPlayers.userId",
           to: "users.id",
         },
       },
@@ -27,4 +27,4 @@ class MatchPlayers extends Model {
   }
 }
 
-module.exports = MatchPlayers;
+module.exports = MatchPlayer;

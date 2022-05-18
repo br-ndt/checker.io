@@ -1,5 +1,14 @@
-.Board {
-  display: flex;
-  flex-direction: column;
-  justify-content: start;
+.Board-wrapper {
+  height: 484px;
+  width: 484px;
+  margin: 30px;
+  border: solid 2px $light-grey;
+  box-shadow: 5px 10px 5px rgba(0, 0, 0, 0.477);
+  align-self: center;
+  
+  .Board {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+  }
 }

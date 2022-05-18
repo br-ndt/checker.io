@@ -6,13 +6,16 @@
   box-shadow: 2px 4px 2px rgba(0, 0, 0, 0.477);
   margin: auto;
   background-color: $red;
-  cursor: move;
 
-  &:hover {
+  &.draggable {
+    cursor: move;
+  }
+
+  &.draggable:hover {
     box-shadow: 0 0 4px 4px $gold;
   }
 
-  &:active {
+  &.draggable:active {
     box-shadow: 0 0 4px 8px lighten($gold, 20%);
   }
 

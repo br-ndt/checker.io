@@ -1,5 +1,6 @@
 class UserSerializer {
   static getSummary(user) {
+    if(!user) return "None";
     const allowedAttributes = ["username", "id"];
     let serializedUser = {};
     for(const attribute of allowedAttributes) {
