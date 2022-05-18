@@ -6,11 +6,10 @@ class Pawn extends Model {
   }
 
   static get relationMappings() {
-    const { Tile } = require("./index");
     return {
       tile: {
         relation: Model.BelongsToOneRelation,
-        modelClass: Tile,
+        modelClass: require("./Tile.js"),
         join: {
           from: "pawns.tileId",
           to: "tiles.id"

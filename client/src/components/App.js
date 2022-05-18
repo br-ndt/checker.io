@@ -6,8 +6,8 @@ import getCurrentUser from "../services/getCurrentUser";
 import RegistrationForm from "./registration/RegistrationForm";
 import SignInForm from "./authentication/SignInForm";
 import TopBar from "./layout/TopBar";
-import SocketClock from "./SocketClock";
-import Match from "./layout/Match";
+import Match from "./game/Match";
+import Matchmaking from "./Matchmaking";
 
 import "../assets/scss/main.scss";
 
@@ -31,12 +31,17 @@ const App = (props) => {
     <Router>
       <TopBar user={currentUser} />
       <Switch>
-        <AuthenticatedRoute exact path="/matches/new" user={currentUser} component={Match}/>
+        <AuthenticatedRoute exact path="/matches/new" user={currentUser} component={Matchmaking}/>
+        <AuthenticatedRoute exact path="/matches/:id" user={currentUser} component={Match}/>
         <Route exact path="/">
           <Redirect to="/matches/new"/>
         </Route>
-        <Route exact path="/users/new" component={RegistrationForm} />
-        <Route exact path="/user-sessions/new" component={SignInForm} />
+        <Route exact path="/users/new">
+          <RegistrationForm user={currentUser}/>
+        </Route>
+        <Route exact path="/user-sessions/new">
+          <SignInForm user={currentUser}/>
+        </Route>
       </Switch>
     </Router>
   );

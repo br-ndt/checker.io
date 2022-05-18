@@ -1,8 +1,8 @@
 import React from "react";
 import Pawn from "./Pawn";
-import itemTypes from "../constants/itemTypes.js";
+import itemTypes from "../../constants/itemTypes.js";
 import { useDrop } from "react-dnd";
-import canMovePawn from "../services/canMovePawn";
+import canMovePawn from "../../services/canMovePawn";
 
 const Tile = ({ x, y, pawnHere, movePawnCallback }) => {
   const color = (x + y) % 2 === 1 ? "black" : "white";

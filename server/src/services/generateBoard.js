@@ -3,13 +3,13 @@ import BoardSerializer from "../serializers/BoardSerializer.js";
 import TileSerializer from "../serializers/TileSerializer.js";
 import PawnSerializer from "../serializers/PawnSerializer.js";
 
-const generateBoard = async (x, y) => {
-  const newBoard = await Board.query().insertAndFetch({ width: x, height: y });
+const generateBoard = async (matchId) => {
+  const newBoard = await Board.query().insertAndFetch({ width: 8, height: 8, matchId });
   const serializedBoard = await BoardSerializer.getSummary(newBoard);
   serializedBoard.rows = [];
-  for (let i = 1; i <= y; ++i) {
+  for (let i = 1; i <= 8; ++i) {
     const thisRow = [];
-    for (let j = 1; j <= x; ++j) {
+    for (let j = 1; j <= 8; ++j) {
       const newTile = await newBoard.$relatedQuery("tiles").insertAndFetch({ x: j, y: i });
       if((j + i) % 2 === 1) {
         if(i <= 3) {

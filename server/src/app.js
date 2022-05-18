@@ -11,7 +11,15 @@ import rootRouter from "./routes/rootRouter.js";
 import http from "http";
 import { Server } from "socket.io";
 import hbsMiddleware from "express-handlebars";
-import { addUser, getUser, deleteUser, getUsers } from "./services/users.js";
+import {
+  addUser,
+  addUserToRoom,
+  getUser,
+  deleteUser,
+  getUsers,
+  getUsersInRoom,
+} from "./services/users.js";
+import { createMatch, getMatch } from "./services/matchmaking.js"
 
 const __filename = fileURLToPath(import.meta.url);
 
@@ -66,30 +74,50 @@ io.use((socket, next) => {
 });
 
 io.on("connection", (socket) => {
-  console.log("A user connected:", socket.id);
+  console.log("A connection message on socket:", socket.id);
+  if(!socket.request.user) {
+    return;
+  }
 
-  socket.on('whoami', (callback) => {
-    callback(socket.request.user ? socket.request.user : '');
-  })
+  socket.on("whoami", (callback) => {
+    callback(socket.request.user ? socket.request.user : "");
+  });
 
-  console.log(socket.request.session);
-  const session = socket.request.session;
-  console.log(`saving socketId ${socket.id} in session ${session.id}`);
-  session.socketId = socket.id;
-  session.save();
-  socket.on("userJoinRoom", ({ userId, room }, callback) => {
-    console.log(`Adding user ${userId} to room ${room}`);
-    const { user, error } = addUser(userId, socket.id, room);
-    if (error) return callback(error);
-
-    socket.join(user.room);
-    socket.in(room).emit("notification", {
-      title: "A user has joined",
-      description: `${user.name} just entered the room`,
-    });
-    io.in(room).emit("users", getUsers(room));
+  socket.on("addUser", async (callback) => {
+    const session = socket.request.session.passport;
+    session.socketId = socket.id;
+    const sessionUser = await addUser(session.user, socket.id);
+    console.log("New user logged in:", sessionUser);
+    io.emit("getUsers", getUsers(), "server-wide");
     callback();
   });
+
+  socket.on("createMatch", async ({ id }, callback) => {
+    const user = getUser(id);
+    console.log(`${user.userModel.username} creating Match...`);
+    const match = await createMatch(user);
+    callback(match.id);
+  });
+
+  socket.on("userJoinRoom", async (userId, room, callback) => {
+    console.log(`Adding user ${userId} to room ${room}`);
+    const user = await addUserToRoom(userId, socket.id, room);
+
+    socket.join(room);
+    console.log(user.userModel);
+    io.in(room).emit("notification", {
+      title: "A user has joined",
+      description: `${user.userModel.username} just entered the room`,
+    });
+    console.log("room#", room);
+    io.in(room).emit("getUsers", getUsersInRoom(room), `room ${room}`);
+    const match = await getMatch(room);
+    callback(match);
+  });
+
+  socket.on("playerMovesPawn", async (roomId, user, board, callback) => {
+
+  })
 
   socket.on("sendMessage", (message) => {
     const user = getUser(socket.id);

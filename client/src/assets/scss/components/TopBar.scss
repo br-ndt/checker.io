@@ -5,10 +5,15 @@
 
   .menu {
     background-color: $black;
+    color: white;
 
     .menu-text, .menu-text a {
       background-color: $black;
       color: $light-grey;
+
+      &.static, &.static:hover, &.static:active {
+        color: $light-grey;
+      }
 
       &:hover {
         color: white;

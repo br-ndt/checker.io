@@ -6,14 +6,21 @@ class Board extends Model {
   }
 
   static get relationMappings() {
-    const { Tile } = require("./index.js");
     return {
       tiles: {
         relation: Model.HasManyRelation,
-        modelClass: Tile,
+        modelClass: require("./Tile.js"),
         join: {
           from: "boards.id",
           to: "tiles.boardId",
+        },
+      },
+      match: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: require("./Match.js"),
+        join: {
+          from: "boards.matchId",
+          to: "matches.id",
         },
       },
     };

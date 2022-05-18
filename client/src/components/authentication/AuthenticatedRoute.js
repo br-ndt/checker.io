@@ -1,13 +1,17 @@
 import React from "react";
 import { Redirect, Route } from "react-router";
+import SocketContext from "../SocketContext";
 
 const AuthenticationCheck = ({ component: Component, user }) => {
   if (user === undefined) {
-    return <div>Loading...</div>
+    return <div>Loading...</div>;
   }
   if (user !== null) {
-    return <Component user={user}
-    />;
+    return (
+      <SocketContext user={user}>
+        <Component user={user} />
+      </SocketContext>
+    );
   }
   return <Redirect to="/user-sessions/new" />;
 };

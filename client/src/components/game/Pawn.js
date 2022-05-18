@@ -1,5 +1,5 @@
 import React from "react";
-import itemTypes from "../constants/itemTypes.js";
+import itemTypes from "../../constants/itemTypes.js";
 import { useDrag } from "react-dnd";
 
 const Pawn = ({ x, y, color }) => {
