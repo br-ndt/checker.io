@@ -33,6 +33,9 @@ const SocketContext = ({ children, user }) => {
         if (socketTimeout) clearTimeout(socketTimeout);
         socket.current.disconnect();
       };
+    } else {
+      setUserInSocketSesh(false);
+      socket.current.disconnect();
     }
   }, [user]);
 

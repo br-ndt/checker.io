@@ -30,8 +30,7 @@ const Match = ({ socket, user }) => {
     });
 
     socket.on("notification", (data) => {
-      console.log(data.title);
-      console.log(data.description);
+      console.log(`${data.title}: ${data.description}`);
     })
   }, []);
 

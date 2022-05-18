@@ -18,8 +18,9 @@ import {
   deleteUser,
   getUsers,
   getUsersInRoom,
+  removeUserFromRoom
 } from "./services/users.js";
-import { createMatch, getMatch } from "./services/matchmaking.js"
+import { createMatch, getMatch } from "./services/matchmaking.js";
 
 const __filename = fileURLToPath(import.meta.url);
 
@@ -75,7 +76,7 @@ io.use((socket, next) => {
 
 io.on("connection", (socket) => {
   console.log("A connection message on socket:", socket.id);
-  if(!socket.request.user) {
+  if (!socket.request.user) {
     return;
   }
 
@@ -101,23 +102,19 @@ io.on("connection", (socket) => {
 
   socket.on("userJoinRoom", async (userId, room, callback) => {
     console.log(`Adding user ${userId} to room ${room}`);
-    const user = await addUserToRoom(userId, socket.id, room);
+    const user = await addUserToRoom(userId, room);
 
     socket.join(room);
-    console.log(user.userModel);
     io.in(room).emit("notification", {
       title: "A user has joined",
       description: `${user.userModel.username} just entered the room`,
     });
-    console.log("room#", room);
     io.in(room).emit("getUsers", getUsersInRoom(room), `room ${room}`);
     const match = await getMatch(room);
     callback(match);
   });
 
-  socket.on("playerMovesPawn", async (roomId, user, board, callback) => {
-
-  })
+  socket.on("playerMovesPawn", async (roomId, user, board, callback) => {});
 
   socket.on("sendMessage", (message) => {
     const user = getUser(socket.id);
@@ -128,11 +125,15 @@ io.on("connection", (socket) => {
     console.log("A user disconnected", socket.id);
     const user = deleteUser(socket.id);
     if (user) {
-      io.in(user.room).emit("notification", {
-        title: "A user has left",
-        description: `${user.name} just left the room`,
-      });
-      io.in(user.room).emit("users", getUsers(user.room));
+      const prevRoom = user.room;
+      if (prevRoom) {
+        removeUserFromRoom(user.userModel.id, prevRoom);
+        io.in(prevRoom).emit("notification", {
+          title: "A user has left",
+          description: `${user.userModel.username} just left the room`,
+        });
+        io.in(prevRoom).emit("getUsers", getUsers(prevRoom), `room ${room}`);
+      }
     }
   });
 });
