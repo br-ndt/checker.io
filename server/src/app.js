@@ -13,7 +13,7 @@ import { Server } from "socket.io";
 import hbsMiddleware from "express-handlebars";
 import {
   addUser,
-  addUserToRoom,
+  addUserToMatchRoom,
   getUser,
   deleteUser,
   getUsers,
@@ -75,8 +75,9 @@ io.use((socket, next) => {
 });
 
 io.on("connection", (socket) => {
-  console.log("A connection message on socket:", socket.id);
-  if (!socket.request.user) {
+  if (!socket.request.user ) {
+    console.log(`Socket ${socket.id} is not associated with any user, closing connection...`);
+    socket.disconnect();
     return;
   }
 
@@ -85,33 +86,38 @@ io.on("connection", (socket) => {
   });
 
   socket.on("addUser", async (callback) => {
-    const session = socket.request.session.passport;
-    session.socketId = socket.id;
-    const sessionUser = await addUser(session.user, socket.id);
-    console.log("New user logged in:", sessionUser);
-    io.emit("getUsers", getUsers(), "server-wide");
-    callback();
+    const user = await addUser(socket);
+    if(user) {
+      console.log("New user connection:", user);
+      io.emit("getUsers", getUsers(), "server-wide");
+      callback();
+    }
   });
 
-  socket.on("createMatch", async ({ id }, callback) => {
+  socket.on("createMatch", async (user, callback) => {
+    const matchId = await createMatch(getUser(user.id));
+    if(matchId) {
+      console.log(`Match ${matchId} created`);
+      callback(matchId);
+    }
+  });
+
+  socket.on("userJoinMatchRoom", async (id, room, callback) => {
     const user = getUser(id);
-    console.log(`${user.userModel.username} creating Match...`);
-    const match = await createMatch(user);
-    callback(match.id);
-  });
-
-  socket.on("userJoinRoom", async (userId, room, callback) => {
-    console.log(`Adding user ${userId} to room ${room}`);
-    const user = await addUserToRoom(userId, room);
-
-    socket.join(room);
-    io.in(room).emit("notification", {
-      title: "A user has joined",
-      description: `${user.userModel.username} just entered the room`,
-    });
-    io.in(room).emit("getUsers", getUsersInRoom(room), `room ${room}`);
-    const match = await getMatch(room);
-    callback(match);
+    if(user) {
+      const matchRoom = await addUserToMatchRoom(user, room);
+      if(matchRoom) {
+        console.log(`${user.userModel.username}-${user.socketId}-${user.userModel.id} successfully joined room ${matchRoom}`)
+        socket.join(matchRoom);
+        io.in(matchRoom).emit("notification", {
+          title: "A user has joined",
+          description: `${user.userModel.username} just entered the room`,
+        });
+        io.in(matchRoom).emit("getUsers", getUsersInRoom(room), `room ${room}`);
+        const match = await getMatch(matchRoom);
+        callback(match);
+      }
+    }
   });
 
   socket.on("playerMovesPawn", async (roomId, user, board, callback) => {});
@@ -122,18 +128,16 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    console.log("A user disconnected", socket.id);
+    console.log("A socket disconnected", socket.id);
     const user = deleteUser(socket.id);
-    if (user) {
-      const prevRoom = user.room;
-      if (prevRoom) {
-        removeUserFromRoom(user.userModel.id, prevRoom);
-        io.in(prevRoom).emit("notification", {
-          title: "A user has left",
-          description: `${user.userModel.username} just left the room`,
-        });
-        io.in(prevRoom).emit("getUsers", getUsers(prevRoom), `room ${room}`);
-      }
+    const prevRoom = removeUserFromRoom(user);
+    if (prevRoom) {
+      console.log(`${user.userModel.username}-${user.socketId}-${user.userModel.id} successfully left Room ${prevRoom}.`)
+      io.in(prevRoom).emit("notification", {
+        title: "A user has left",
+        description: `${user.userModel.username} just left the room`,
+      });
+      io.in(prevRoom).emit("getUsers", getUsers(prevRoom), `room ${prevRoom}`);
     }
   });
 });
@@ -142,4 +146,5 @@ server.listen(configuration.web.port, (error) => {
   if (error) console.log(error);
   console.log(`Server listening on port ${configuration.web.port}`);
 });
+
 export default app;

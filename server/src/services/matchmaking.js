@@ -5,13 +5,17 @@ import BoardSerializer from "../serializers/BoardSerializer.js";
 const playersSeeking = [];
 
 export const createMatch = async (user) => {
+  if(!user) {
+    return false;
+  }
+  console.log(`${user.userModel.username} creating Match...`);
   const newMatch = await Match.query().insertAndFetch({ isFinished: false, isRedsTurn: true });
   newMatch.player1 = await newMatch
     .$relatedQuery("matchPlayers")
     .insert({ playerId: user.id, playerColor: "white" });
   newMatch.board = await generateBoard(newMatch.id);
   const serializedMatch = await MatchSerializer.getSummary(newMatch);
-  return serializedMatch;
+  return serializedMatch.id;
 };
 
 export const getMatch = async (id) => {

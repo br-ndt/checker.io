@@ -4,15 +4,17 @@ import UserSerializer from "../serializers/UserSerializer.js";
 const rooms = {};
 const users = [];
 
-export const addUserToRoom = async (id, room) => {
-  const user = getUser(id);
-  if(user.room) {
+export const addUserToMatchRoom = async (user, room) => {
+  console.log(`${user.userModel.username}-${user.socketId}-${user.userModel.id} joining Room ${room}...`);
+  if (user.room) {
     removeUserFromRoom(user.userModel.id, user.room);
   }
   if (rooms[room]) {
     if (rooms[room].users) {
-      if(!rooms[room].users.find((user) => user.userModel.id == id)) {
+      if (!rooms[room].users.find((checkedUser) => user.userModel.id == checkedUser.userModel.addUserid)) {
         rooms[room].users.push(user);
+      } else {
+        return false;
       }
     } else {
       rooms[room].users = [user];
@@ -20,21 +22,25 @@ export const addUserToRoom = async (id, room) => {
   } else {
     rooms[room] = { users: [user] };
   }
+
   user.room = room;
-  return user;
+  return room;
 };
 
-export const addUser = async (id, socketId) => {
-  const userModel = UserSerializer.getSummary(await User.query().findById(id));
-  const user = { userModel, socketId };
-  const cachedUser = getUser(user.userModel.id);
-  if(!cachedUser) {
+export const addUser = async (socket) => {
+  const session = socket.request.session.passport;
+  session.socketId = socket.id;
+  const cachedUser = getUser(session.user);
+  if (!cachedUser) {
+    const userModel = UserSerializer.getSummary(await User.query().findById(session.user));
+    const user = { userModel, socketId: socket.id };
     users.push(user);
+    return user;
   } else {
-    cachedUser.socketId = socketId;
+    cachedUser.socketId = socket.id;
+    return false;
   }
-  return user;
-}
+};
 
 export const getUser = (id) => {
   return users.find((user) => user.userModel.id == id);
@@ -42,19 +48,28 @@ export const getUser = (id) => {
 
 export const deleteUser = (socketId) => {
   const index = users.findIndex((user) => user.socketId == socketId);
-  console.log(index, users[index]);
   if (index !== -1) {
-    return users.splice(index, 1)[0]
-  };
+    const user = users.splice(index, 1)[0];
+    if(user) {
+      return user;
+    }
+  }
+  return false;
 };
 
-export const removeUserFromRoom = async (id, room) => {
-  console.log(`removing ${id} from room ${room}`)
-  if(rooms[room]) {
-    const index = getUsersInRoom(room).findIndex((user) => user.userModel.id == id);
-    if(index !== -1) return rooms[room].users.splice(index, 1)[0];
+export const removeUserFromRoom = (user) => {
+  if (user.room && rooms[user.room]) {
+    console.log(`${user.userModel.username}-${user.socketId}-${user.userModel.id} leaving Room ${user.room}...`);
+    const index = getUsersInRoom(user.room).findIndex((checkedUser) => user.userModel.id == checkedUser.userModel.id);
+    if (index !== -1) {
+      rooms[user.room].users.splice(index, 1)[0];
+      const prevRoom = user.room;
+      delete user.room;
+      return prevRoom;
+    }
   }
-}
+  return false;
+};
 
 export const getUsersInRoom = (room) => {
   if (rooms[room]) {
@@ -62,8 +77,8 @@ export const getUsersInRoom = (room) => {
   } else {
     return null;
   }
-}
+};
 
 export const getUsers = () => {
   return users;
-}
+};

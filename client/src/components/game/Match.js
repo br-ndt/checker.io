@@ -21,7 +21,7 @@ const Match = ({ socket, user }) => {
       console.log("the match has been loaded");
     });
 
-    socket.emit("userJoinRoom", user.id, id, (data) => {
+    socket.emit("userJoinMatchRoom", user.id, id, (data) => {
       setBoard(data.board);
     });
 
