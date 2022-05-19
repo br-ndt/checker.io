@@ -5,7 +5,7 @@ import { useDrop } from "react-dnd";
 import canMovePawn from "../../services/canMovePawn";
 import DraggablePawn from "./DraggablePawn";
 
-const Tile = ({ id, x, y, pawnHere, movePawnCallback, clientColor }) => {
+const Tile = ({ id, x, y, pawnHere, movePawnCallback, clientColor, isClientsTurn }) => {
   const color = (x + y) % 2 === 1 ? "black" : "white";
   const [{ isOver, canDrop }, drop] = useDrop(
     () => ({
@@ -26,7 +26,7 @@ const Tile = ({ id, x, y, pawnHere, movePawnCallback, clientColor }) => {
   let thisPawn = null;
   if (pawnHere) {
     thisPawn =
-      clientColor === pawnHere.color ? (
+      clientColor === pawnHere.color && isClientsTurn ? (
         <DraggablePawn tileId={id} x={x} y={y} color={pawnHere.color} />
       ) : (
         <Pawn color={pawnHere.color} />

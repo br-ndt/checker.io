@@ -11,4 +11,17 @@
     flex-direction: column;
     justify-content: start;
   }
+
+  .turn-prompt {
+    text-align: center;
+    padding-top:10px;
+
+    &.white {
+      color: white;
+    }
+
+    &.red {
+      color: $red;
+    }
+  }
 }

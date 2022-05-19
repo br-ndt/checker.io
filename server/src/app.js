@@ -146,9 +146,9 @@ io.on("connection", (socket) => {
 
   socket.on("playerMovesPawn", async (roomId, user, match, callback) => {
     try {
-      const newBoard = await movePawn(socket.id, roomId, user, match);
-      if(newBoard) {
-        io.in(roomId).emit("boardUpdate", match);
+      const newMatchState = await movePawn(socket.id, roomId, user, match);
+      if(newMatchState) {
+        io.in(roomId).emit("boardUpdate", newMatchState);
         callback("Board was updated");
       }   
     } catch (error) {

@@ -31,12 +31,11 @@ const Match = ({ socket, user }) => {
 
   useEffect(() => {
     socket.emit("userJoinMatchRoom", user.id, id, (data) => {
-      console.log(data);
       setMatch(data);
     });
 
     socket.on("boardUpdate", (data) => {
-      setMatch({ ...match, board: data.board });
+      setMatch(data);
     });
 
     socket.on("notification", (data) => {
@@ -67,13 +66,24 @@ const Match = ({ socket, user }) => {
   const clientColor =
     user.id === match.player1.id ? "white" : user.id === match.player2.id ? "red" : "";
 
+  let isClientsTurn = false;
+  if(clientColor) {
+    if((clientColor === "red" && match.isRedsTurn) || (clientColor === "white" && !match.isRedsTurn)) {
+      isClientsTurn = true;
+    } 
+  }
+
+  const turnPrompt = isClientsTurn ? <h4 className={`turn-prompt ${clientColor}`}>It's your turn!</h4> : null;
+  const matchProps = { isClientsTurn, movePawn, clientColor };
+
   return (
     <div className="Match">
       <DndProvider backend={HTML5Backend}>
         <div className="central">
           <div className="player-wrapper"><p className="player red">Player 2: {match.player2.username}</p><p className="player white">Player 1: {match.player1.username}</p></div>
           <div className="Board-wrapper">
-            <Board {...match.board} movePawnCallback={movePawn} clientColor={clientColor} />
+            <Board {...match.board} {...matchProps} />
+            {turnPrompt}
           </div>
           <div className="Chat-wrapper">
             <Chat user={user} socket={socket} room={id}/>

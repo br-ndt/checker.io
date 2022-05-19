@@ -34,7 +34,7 @@ export const updateBoard = async (matchId, newBoard) => {
           const oldTile = await board.$relatedQuery("tiles").findById(pawnHere.tileId);
           const newTile = await board.$relatedQuery("tiles").findOne({ x: j+1, y: i+1 });
           const pawn = await oldTile.$relatedQuery("pawn");
-          await pawn.$query().patchAndFetchById(pawn.id, { tileId: newTile.id });
+          if(pawn) await pawn.$query().patchAndFetchById(pawn.id, { tileId: newTile.id });
         }
       }
     }
