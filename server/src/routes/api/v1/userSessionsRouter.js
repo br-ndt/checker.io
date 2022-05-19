@@ -1,5 +1,6 @@
 import express from "express";
 import passport from "passport";
+import UserSerializer from "../../../serializers/UserSerializer.js";
 
 const sessionRouter = new express.Router();
 
@@ -22,7 +23,8 @@ sessionRouter.post("/", (req, res, next) => {
 
 sessionRouter.get("/current", async (req, res) => {
   if (req.user) {
-    res.status(200).json(req.user);
+    const serializedUser = UserSerializer.getSummary(req.user);
+    res.status(200).json(serializedUser);
   } else {
     res.status(401).json(undefined);
   }

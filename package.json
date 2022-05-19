@@ -14,7 +14,8 @@
     "start": "yarn workspace checker.io-server start",
     "dev:cypress": "yarn workspace checker.io-server dev:e2e",
     "e2e:open": "yarn workspace checker.io-e2e e2e:open",
-    "e2e:run": "yarn workspace checker.io-e2e e2e:run"
+    "e2e:run": "yarn workspace checker.io-e2e e2e:run",
+    "db:reset": "dropdb checker.io_development && createdb checker.io_development && (cd server && yarn migrate:latest)"
   },
   "engines": {
     "node": "^14.19"

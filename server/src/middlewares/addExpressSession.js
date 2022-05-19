@@ -1,14 +1,8 @@
-import session from "cookie-session";
-import configuration from "../config.js";
+import getExpressSession from "./getExpressSession.js";
 
 const addExpressSession = (app) => {
   app.use(
-    session({
-      name: "checker.io-session",
-      keys: [configuration.session.secret],
-      resave: true,
-      maxAge: configuration.maxAge,
-    })
+    getExpressSession()
   );
 };
 

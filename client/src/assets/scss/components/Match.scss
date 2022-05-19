@@ -1,12 +1,29 @@
 .Match {
+  .central {
+    display: flex;
+    
+    .player-wrapper {
+      display: flex;
+      flex-direction: column;
+      padding: 50px 10px;
+      justify-content: space-between;
+
+      .player {
+        margin: 0;
+
+        &.white {
+          color: white;
+        }
+
+        &.red {
+          color: $red;
+        }
+      }
+    }
+  }
+
   .message {
     color: $light-grey;
   }
-  .Board-wrapper {
-    height: 484px;
-    width: 484px;
-    margin: 30px auto;
-    border: solid 2px $light-grey;
-    box-shadow: 5px 10px 5px rgba(0, 0, 0, 0.477);
-  }
+
 }

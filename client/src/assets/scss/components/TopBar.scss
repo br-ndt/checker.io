@@ -5,10 +5,15 @@
 
   .menu {
     background-color: $black;
+    color: white;
 
     .menu-text, .menu-text a {
       background-color: $black;
       color: $light-grey;
+
+      &.static, &.static:hover, &.static:active {
+        color: $light-grey;
+      }
 
       &:hover {
         color: white;
@@ -30,12 +35,16 @@
         border-radius: 0 5px 5px 0;
       }
 
-      a {
+      button {
+        border-radius: 5px;
+      }
+
+      a, button {
         background-color: $dark-grey;
         color: white;
 
         &:hover {
-          background-color: lighten($dark-grey, 5%);
+          background-color: lighten($dark-grey, 10%);
         }
 
         &:active {

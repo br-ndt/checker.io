@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import { Redirect } from "react-router-dom";
 import FormError from "../layout/FormError";
 import config from "../../config";
 
-const RegistrationForm = () => {
+const RegistrationForm = ({ user }) => {
   const [userPayload, setUserPayload] = useState({
+    username: "",
     email: "",
     password: "",
     passwordConfirmation: "",
@@ -15,9 +17,16 @@ const RegistrationForm = () => {
 
   const validateInput = (payload) => {
     setErrors({});
-    const { email, password, passwordConfirmation } = payload;
-    const emailRegexp = config.validation.email.regexp;
+    const { username, email, password, passwordConfirmation } = payload;
+    const emailRegexp = config.validation.email.regexp.emailRegex;
     let newErrors = {};
+    if (username.trim() == "") {
+      newErrors = {
+        ...newErrors,
+        username: "is required",
+      };
+    }
+
     if (!email.match(emailRegexp)) {
       newErrors = {
         ...newErrors,
@@ -80,15 +89,32 @@ const RegistrationForm = () => {
       [event.currentTarget.name]: event.currentTarget.value,
     });
   };
-
+  
   if (shouldRedirect) {
     location.href = "/";
+  }
+  
+  if (user) {
+    return <Redirect to="/"/>;
   }
 
   return (
     <div className="grid-container RegistrationForm">
-      <h1>Register</h1>
+      <h1>Welcome to checker.io!</h1>
+      <h3>Please register in order to play</h3>
       <form onSubmit={onSubmit}>
+        <div>
+          <label>
+            Username
+            <input
+              type="text"
+              name="username"
+              value={userPayload.username}
+              onChange={onInputChange}
+            />
+            <FormError error={errors.username} />
+          </label>
+        </div>
         <div>
           <label>
             Email

@@ -1,11 +1,13 @@
 import React from "react";
-import itemTypes from "../constants/itemTypes.js";
+import Pawn from "./Pawn";
+import itemTypes from "../../constants/itemTypes.js";
 import { useDrag } from "react-dnd";
 
-const Pawn = ({ x, y, color }) => {
+const DraggablePawn = ({ tileId, color, x, y }) => {
   const [{isDragging}, drag] = useDrag(() => ({
     type: itemTypes.PAWN,
     item: {
+      tileId,
       x,
       y,
       color
@@ -16,10 +18,8 @@ const Pawn = ({ x, y, color }) => {
   }))
 
   return (
-    <div ref={drag} className={`Pawn ${color} ${isDragging ? 'dragging' : ''}`}>
-      <div className="img-overlay"/>
-    </div>
+    <Pawn color={color} drag={drag} isDragging={isDragging}/>
   )
 }
 
-export default Pawn;
+export default DraggablePawn;

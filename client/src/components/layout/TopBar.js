@@ -15,18 +15,17 @@ const TopBar = ({ user }) => {
   ];
 
   const authenticatedListItems = [
+    <li key="welcome-user" className="menu-text static">Welcome, {user ? user.username : ""}!</li>,
     <li className="menu-button white" key="sign-out">
       <SignOutButton />
-    </li>,
+    </li>
   ];
 
   return (
     <div className="top-bar TopBar">
       <div className="top-bar-left">
         <ul className="menu">
-          <li className="menu-text"><Link to="/">checker.io</Link></li>
-          <li className="menu-text"><Link to="/matches/new">New Match</Link></li>
-          <li className="menu-text"><Link to="/leaderboard">Leaderboard</Link></li>
+          <li className="menu-text"><Link to="/matches/new">checker.io</Link></li>
         </ul>
       </div>
       <div className="top-bar-right">

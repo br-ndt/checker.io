@@ -1,7 +1,7 @@
 import React from "react";
 import Tile from "./Tile";
 
-const BoardRow = ({ row, movePawnCallback }) => {
+const BoardRow = ({ row, movePawnCallback, clientColor, isClientsTurn }) => {
   return row.map(tile => {
     return (
       <Tile
@@ -10,6 +10,9 @@ const BoardRow = ({ row, movePawnCallback }) => {
         x={tile.x}
         y={tile.y}
         pawnHere={tile.pawn}
+        clientColor={clientColor}
+        isClientsTurn={isClientsTurn}
+        id={tile.id}
       />
     );
   });

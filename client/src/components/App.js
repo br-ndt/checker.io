@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Redirect, Switch, Route } from "react-router-dom";
 import { hot } from "react-hot-loader/root";
-
+import AuthenticatedRoute from "./authentication/AuthenticatedRoute";
 import getCurrentUser from "../services/getCurrentUser";
 import RegistrationForm from "./registration/RegistrationForm";
 import SignInForm from "./authentication/SignInForm";
 import TopBar from "./layout/TopBar";
-import SocketClock from "./SocketClock";
-import Match from "./layout/Match";
+import Match from "./game/Match";
+import Matchmaking from "./Matchmaking";
 
 import "../assets/scss/main.scss";
 
@@ -26,18 +26,22 @@ const App = (props) => {
     fetchCurrentUser();
   }, []);
 
+
   return (
     <Router>
       <TopBar user={currentUser} />
       <Switch>
+        <AuthenticatedRoute exact path="/matches/new" user={currentUser} component={Matchmaking}/>
+        <AuthenticatedRoute exact path="/matches/:id" user={currentUser} component={Match}/>
         <Route exact path="/">
-          <SocketClock/>
+          <Redirect to="/matches/new"/>
         </Route>
-        <Route exact path="/matches/new">
-          <Match/>
+        <Route exact path="/users/new">
+          <RegistrationForm user={currentUser}/>
         </Route>
-        <Route exact path="/users/new" component={RegistrationForm} />
-        <Route exact path="/user-sessions/new" component={SignInForm} />
+        <Route exact path="/user-sessions/new">
+          <SignInForm user={currentUser}/>
+        </Route>
       </Switch>
     </Router>
   );

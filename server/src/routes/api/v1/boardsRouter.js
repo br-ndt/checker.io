@@ -1,5 +1,5 @@
 import express from "express";
-import generateBoard from "../../../services/generateBoard.js";
+import { generateBoard } from "../../../services/board.js";
 
 const boardsRouter = new express.Router();
 

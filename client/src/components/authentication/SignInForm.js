@@ -1,8 +1,9 @@
 import React, { useState } from "react";
+import { Redirect } from "react-router-dom";
 import config from "../../config";
 import FormError from "../layout/FormError";
 
-const SignInForm = () => {
+const SignInForm = ({ user }) => {
   const [userPayload, setUserPayload] = useState({ email: "", password: "" });
   const [shouldRedirect, setShouldRedirect] = useState(false);
   const [errors, setErrors] = useState({});
@@ -12,6 +13,7 @@ const SignInForm = () => {
     const { email, password } = payload;
     const emailRegexp = config.validation.email.regexp;
     let newErrors = {};
+
     if (!email.match(emailRegexp)) {
       newErrors = {
         ...newErrors,
@@ -30,8 +32,8 @@ const SignInForm = () => {
   };
 
   const onSubmit = async (event) => {
-    event.preventDefault()
-    validateInput(userPayload)
+    event.preventDefault();
+    validateInput(userPayload);
     try {
       if (Object.keys(errors).length === 0) {
         const response = await fetch("/api/v1/user-sessions", {
@@ -39,20 +41,20 @@ const SignInForm = () => {
           body: JSON.stringify(userPayload),
           headers: new Headers({
             "Content-Type": "application/json",
-          })
-        })
-        if(!response.ok) {
-          const errorMessage = `${response.status} (${response.statusText})`
-          const error = new Error(errorMessage)
-          throw(error)
+          }),
+        });
+        if (!response.ok) {
+          const errorMessage = `${response.status} (${response.statusText})`;
+          const error = new Error(errorMessage);
+          throw error;
         }
-        const userData = await response.json()
-        setShouldRedirect(true)
+        const userData = await response.json();
+        setShouldRedirect(true);
       }
-    } catch(err) {
-      console.error(`Error in fetch: ${err.message}`)
+    } catch (err) {
+      console.error(`Error in fetch: ${err.message}`);
     }
-  }
+  };
 
   const onInputChange = (event) => {
     setUserPayload({
@@ -63,6 +65,10 @@ const SignInForm = () => {
 
   if (shouldRedirect) {
     location.href = "/";
+  }
+  
+  if (user) {
+    return <Redirect to="/"/>;
   }
 
   return (
