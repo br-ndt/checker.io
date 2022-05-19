@@ -5,8 +5,6 @@ const getExpressSession = () => {
   return session({
     name: "checker.io-session",
     keys: [configuration.session.secret],
-    resave: true,
-    saveUninitialized: false,
     maxAge: configuration.maxAge,
   })
 }
