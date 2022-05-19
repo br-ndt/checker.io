@@ -20,4 +20,5 @@ yarn dev
 You will need to register an account to access the app, from which point it will create a new Match and place you within its corresponding room.
 Tokens are movable, however Player 2 (red) takes their turn first, so you will need an opponent to enter your Match room and take their turn.
 Jumping/eliminating enemy pawns is currently in development, as is the chat, so for now you will not be able to do much.
-THat said, enjoy!
+
+That said, enjoy!
