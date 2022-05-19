@@ -1,12 +1,35 @@
 .Match {
   .central {
     display: flex;
+    flex-direction: column;
+
+    @include for-tablet-portrait-up {
+      flex-wrap: wrap;
+    }
+    
+    @include for-tablet-landscape-up {
+      flex-direction: row;
+      flex-wrap: nowrap;
+      justify-content: space-around;
+      .flex-break {
+        display: none;
+      }
+    } 
     
     .player-wrapper {
       display: flex;
-      flex-direction: column;
-      padding: 50px 10px;
+      flex-direction: row-reverse;
       justify-content: space-between;
+      padding: 10px;
+
+      @include for-tablet-portrait-up {
+
+      }
+
+      @include for-tablet-landscape-up {
+        flex-direction: column;
+        padding: 50px 10px;
+      }
 
       .player {
         margin: 0;
@@ -25,5 +48,4 @@
   .message {
     color: $light-grey;
   }
-
 }

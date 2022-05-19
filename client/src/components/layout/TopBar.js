@@ -25,7 +25,7 @@ const TopBar = ({ user }) => {
     <div className="top-bar TopBar">
       <div className="top-bar-left">
         <ul className="menu">
-          <li className="menu-text"><Link to="/matches/new">checker.io</Link></li>
+          <li className="menu-text app-title"><Link to="/matches/new">checker.io</Link></li>
         </ul>
       </div>
       <div className="top-bar-right">

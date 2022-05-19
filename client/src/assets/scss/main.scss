@@ -1,6 +1,7 @@
 @import "./foundation/settings";
 @import "~foundation-sites/scss/foundation";
 @import "./colors.scss";
+@import "./mixins.scss";
 @include foundation-everything;
 // place global css here
 
@@ -27,6 +28,21 @@ html, body {
   -ms-user-select: none; /* Internet Explorer/Edge */
   user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome, Opera and Firefox */
+}
+
+.flex-break {
+  flex-basis: 100%;
+  height: 0;
+}
+
+.system-message {
+  position: absolute;
+  z-index: 100;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.65);
+  color: white;
+  text-align: center;
 }
 
 $pawn-img: url("../images/pawn_overlay.png");

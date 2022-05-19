@@ -39,7 +39,7 @@ const SocketContext = ({ children, user }) => {
     }
   }, [user]);
 
-  const messageSpace = message ? <h3 className="message">{message}</h3> : null;
+  const messageSpace = message ? <h3 className="system-message">{message}</h3> : null;
 
   const childrenRender = userInSocketSesh
     ? React.Children.map(children, (child) =>

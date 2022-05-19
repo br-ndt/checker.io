@@ -1,10 +1,24 @@
 .Board-wrapper {
-  height: 484px;
-  width: 484px;
-  margin: 30px;
+  height: 324px;
+  width: 324px;
+  margin: 10px;
   border: solid 2px $light-grey;
   box-shadow: 5px 10px 5px rgba(0, 0, 0, 0.477);
   align-self: center;
+  display: flex;
+  flex-direction: column-reverse;
+  
+  @include for-tablet-portrait-up {
+    height: 484px;
+    width: 484px;
+    margin: 30px;
+    display: block;
+  }
+
+  @include for-desktop-up {
+    height: 604px;
+    width: 604px;
+  }
   
   .Board {
     display: flex;

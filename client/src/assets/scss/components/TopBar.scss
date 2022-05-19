@@ -2,67 +2,98 @@
 
 .TopBar {
   background-color: $black;
+  flex-wrap: nowrap;
 
-  .menu {
-    background-color: $black;
-    color: white;
+  @include for-tablet-portrait-up {
+    flex-wrap: wrap;
+  }
 
-    .menu-text, .menu-text a {
+  .top-bar-right, .top-bar-left {
+    max-width: 50%;
+
+    .menu {
       background-color: $black;
-      color: $light-grey;
+      color: white;
 
-      &.static, &.static:hover, &.static:active {
+      li {
+        display: none;
+  
+        &.app-title, &.menu-button {
+          display: list-item;
+        }
+      }
+  
+      .menu-text, .menu-text a {
+        background-color: $black;
         color: $light-grey;
+  
+        &.static, &.static:hover, &.static:active {
+          color: $light-grey;
+        }
+  
+        &:hover {
+          color: white;
+        }
+  
+        &:active {
+          color: darken($light-grey, 30%);
+        }
       }
-
-      &:hover {
-        color: white;
-      }
-
-      &:active {
-        color: darken($light-grey, 30%);
+  
+      .menu-button {
+        border-radius: 5px;
+  
+        &.left a {
+          border-radius: 5px 0 0 5px;
+        }
+  
+        &.right a {
+          border-radius: 0 5px 5px 0;
+        }
+  
+        button {
+          border-radius: 5px;
+        }
+  
+        a, button {
+          background-color: $dark-grey;
+          color: white;
+  
+          &:hover {
+            background-color: lighten($dark-grey, 10%);
+          }
+  
+          &:active {
+            background-color: darken($dark-grey, 5%);
+          }
+        }
+  
+        &.white a {
+          background-color: $light-grey;
+          color: $black;
+  
+          &:hover {
+            background-color: white;
+          }
+  
+          &:active {
+            background-color: darken($light-grey, 30%);
+          }
+        }
       }
     }
-
-    .menu-button {
-      border-radius: 5px;
-
-      &.left a {
-        border-radius: 5px 0 0 5px;
+    @include for-tablet-portrait-up {
+      .menu li {
+        display: list-item;
       }
+    }
+  }
 
-      &.right a {
-        border-radius: 0 5px 5px 0;
-      }
-
-      button {
-        border-radius: 5px;
-      }
-
-      a, button {
-        background-color: $dark-grey;
-        color: white;
-
-        &:hover {
-          background-color: lighten($dark-grey, 10%);
-        }
-
-        &:active {
-          background-color: darken($dark-grey, 5%);
-        }
-      }
-
-      &.white a {
-        background-color: $light-grey;
-        color: $black;
-
-        &:hover {
-          background-color: white;
-        }
-
-        &:active {
-          background-color: darken($light-grey, 30%);
-        }
+  .top-bar-right {
+    .menu {
+      flex-direction: row-reverse;
+      @include for-tablet-portrait-up {
+        flex-direction: row;
       }
     }
   }

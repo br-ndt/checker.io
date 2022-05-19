@@ -1,18 +1,43 @@
 .Chat-wrapper {
-  width: 200px;
-  height: 484px;
-  margin: 50px 10px;
+  width: 324px;
+  height: 300px;
+  margin: 5px auto;
+  display: flex;
+
+  @include for-tablet-portrait-up {
+    width: 484px;
+    height: 300px;
+  }
+
+  @include for-tablet-landscape-up {
+    flex-direction: column;
+    margin: 50px 10px;
+    width: 260px;
+    height: 484px;
+  }
+
+  @include for-desktop-up {
+    height: 604px;
+  }
+
+  .room-info {
+    padding: 4px;
+    color: white;
+
+    @include for-tablet-landscape-up {
+      width: 100%;
+    }
+  }
 
   .Chat {
     border-radius: 5px;
     border: 1px solid $light-grey;
     background-color: $black;
-    width: 30vw;
     height: 100%;
+    width: 100%;
     display: flex;
     flex-direction: column;
     box-shadow: 5px 10px 5px rgba(0, 0, 0, 0.477);
-
 
     .Chat-body {
       height: calc(100% - 45px);
@@ -55,10 +80,6 @@
           }
         }
       }
-
-      
-
-      
     }
   }
 }
