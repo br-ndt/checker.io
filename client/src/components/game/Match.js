@@ -85,7 +85,9 @@ const Match = ({ socket, user }) => {
             <Board {...match.board} {...matchProps} />
             {turnPrompt}
           </div>
+          <div className="flex-break"/>
           <div className="Chat-wrapper">
+            <div className="room-info">Room {match.id} Chat</div>
             <Chat user={user} socket={socket} room={id}/>
           </div>
         </div>
