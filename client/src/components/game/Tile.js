@@ -11,10 +11,10 @@ const Tile = ({ id, x, y, pawnHere, movePawnCallback, clientColor, isClientsTurn
     () => ({
       accept: itemTypes.PAWN,
       drop: (item) => {
-        movePawnCallback({ x: item.x, y: item.y }, { x, y, pawn: pawnHere ? true : false }, item);
+        movePawnCallback({ x: item.x, y: item.y, pawn: true }, { x, y, pawn: pawnHere ? true : false }, item);
       },
       canDrop: (item) =>
-        canMovePawn({ x: item.x, y: item.y }, { x, y, pawn: pawnHere ? true : false }),
+        canMovePawn({ x: item.x, y: item.y, pawn: true }, { x, y, pawn: pawnHere ? true : false }),
       collect: (monitor) => ({
         isOver: !!monitor.isOver(),
         canDrop: !!monitor.canDrop(),

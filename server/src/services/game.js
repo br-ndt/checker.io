@@ -1,13 +1,14 @@
-import { updateBoard } from "./board.js";
 import { getUser } from "./users.js";
-import { Match } from "../models/index.js";
+import { Match, Tile, Pawn } from "../models/index.js";
 import MatchSerializer from "../serializers/MatchSerializer.js";
+import BoardSerializer from "../serializers/BoardSerializer.js";
 
-export const movePawn = async (socketId, roomId, user, match) => {
+export const movePawn = async (socketId, roomId, user, fromTile, toTile, pawn) => {
   try {
+    console.log(roomId, toTile, fromTile, pawn);
     const currentMatch = await Match.query().findById(roomId);
     const serializedNewMatch = await MatchSerializer.getRoomInfo(currentMatch);
-    if (serializedNewMatch && match.id === serializedNewMatch.id) {
+    if (serializedNewMatch) {
       const thisUser = getUser(user.id);
       if (thisUser && thisUser.socketId === socketId) {
         let validTurn = false;
@@ -27,9 +28,14 @@ export const movePawn = async (socketId, roomId, user, match) => {
           validTurn = true;
         }
         if (validTurn) {
+          console.log('valid turn');
           await currentMatch.$query().patch({ isRedsTurn: !currentMatch.isRedsTurn });
+          const board = await currentMatch.$relatedQuery("board");
+          const oldTile = await board.$relatedQuery("tiles").findOne({ x: fromTile.x, y: fromTile.y });
+          const newTile = await board.$relatedQuery("tiles").findOne({ x: toTile.x, y: toTile.y });
+          await oldTile.$relatedQuery("pawn").patch({ tileId: newTile.id });
           serializedNewMatch.isRedsTurn = currentMatch.isRedsTurn;
-          serializedNewMatch.board = await updateBoard(currentMatch.id, match.board);
+          serializedNewMatch.board = await BoardSerializer.getFullBoard(board);
           return serializedNewMatch;
         } else {
           const serializedCurrentMatch = await MatchSerializer.getSummary(currentMatch);
