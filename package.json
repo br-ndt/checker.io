@@ -18,6 +18,7 @@
     "db:reset": "dropdb checker.io_development && createdb checker.io_development && (cd server && yarn migrate:latest)"
   },
   "engines": {
-    "node": "^14.19"
+    "node": "^14.19",
+    "yarn": "1.22.10"
   }
 }
