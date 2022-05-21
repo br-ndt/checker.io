@@ -1,6 +1,7 @@
 @import "./foundation/settings";
 @import "~foundation-sites/scss/foundation";
 @import "./colors.scss";
+@import "./fonts.scss";
 @import "./mixins.scss";
 @include foundation-everything;
 // place global css here
@@ -9,6 +10,11 @@
 *::before,
 *::after {
   box-sizing: border-box;
+  font-family: $mono;
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: $gothic;
 }
 
 :root {
@@ -45,6 +51,7 @@ html, body {
   text-align: center;
 }
 
+$app-title: url("../images/app-title.png");
 $pawn-img: url("../images/pawn_overlay.png");
 $king-img: url("../images/king_overlay.png");
 @import "./components/Authentication.scss";

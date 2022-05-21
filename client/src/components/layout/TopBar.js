@@ -29,7 +29,7 @@ const TopBar = ({ user }) => {
     <div className="top-bar TopBar">
       <div className="top-bar-left">
         <ul className="menu">
-          <li className="menu-text app-title"><Link to="/matches">checker.io</Link></li>
+          <li className="menu-text app-title"><Link to="/matches"><div className="titleImg"/></Link></li>
           {newMatch}
         </ul>
       </div>

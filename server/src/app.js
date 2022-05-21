@@ -40,7 +40,7 @@ const io =
       })
     : new Server(server, {
         cors: {
-          origin: "https://checker.io/herokuapp.com/",
+          origin: "https://checker-io/herokuapp.com/",
           methods: ["GET", "POST"],
         },
       });
