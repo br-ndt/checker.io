@@ -16,6 +16,6 @@ exports.up = async (knex) => {
  */
 exports.down = (knex) => {
   return knex.schema.table("boards", (t) => {
-    t.dropColumnIfExists("matchId");
+    t.dropColumn("matchId");
   })
 }
