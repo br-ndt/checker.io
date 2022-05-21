@@ -92,10 +92,7 @@
 
   .top-bar-right {
     .menu {
-      flex-direction: row-reverse;
-      @include for-tablet-portrait-up {
-        flex-direction: row;
-      }
+      justify-content: flex-end;
     }
   }
 }
