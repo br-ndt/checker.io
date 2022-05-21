@@ -1,10 +1,37 @@
-import { User } from "../models/index.js";
+import { Match, User } from "../models/index.js";
 import UserSerializer from "../serializers/UserSerializer.js";
 
 const rooms = {};
 const users = [];
 
-export const addUserToMatchRoom = async (user, room) => {
+export const getRoomList = async () => {
+  const roomList = [];
+  for (const roomId in rooms) {
+    const thisRoom = rooms[roomId];
+    thisRoom.id = roomId;
+    const thisMatch = await Match.query().findById(roomId);
+    if (thisMatch) {
+      const matchPlayer1 = await thisMatch
+        .$relatedQuery("matchPlayers")
+        .findOne({ playerColor: "white" });
+      if (matchPlayer1) {
+        const player1 = await matchPlayer1.$relatedQuery("user");
+        if (player1) thisRoom.player1 = UserSerializer.getSummary(player1);
+      }
+      const matchPlayer2 = await thisMatch
+        .$relatedQuery("matchPlayers")
+        .findOne({ playerColor: "red" });
+      if (matchPlayer2) {
+        const player2 = await matchPlayer2.$relatedQuery("user");
+        if (player2) thisRoom.player2 = UserSerializer.getSummary(player2);
+      }
+      roomList.push(thisRoom);
+    }
+  }
+  return roomList;
+};
+
+export const addUserToRoom = async (user, room) => {
   console.log(
     `${user.userModel.username}-${user.socketId}-${user.userModel.id} joining Room ${room}...`
   );
@@ -82,6 +109,7 @@ export const removeUserFromRoom = (user) => {
     if (index !== -1) {
       rooms[user.room].users.splice(index, 1)[0];
       const prevRoom = user.room;
+      if (rooms[user.room].users.length === 0) delete rooms[user.room];
       delete user.room;
       return prevRoom;
     }

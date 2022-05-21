@@ -6,6 +6,7 @@ import getCurrentUser from "../services/getCurrentUser";
 import RegistrationForm from "./registration/RegistrationForm";
 import SignInForm from "./authentication/SignInForm";
 import TopBar from "./layout/TopBar";
+import Lobby from "./Lobby";
 import Match from "./game/Match";
 import Matchmaking from "./Matchmaking";
 
@@ -31,10 +32,11 @@ const App = (props) => {
     <Router>
       <TopBar user={currentUser} />
       <Switch>
+        <AuthenticatedRoute exact path="/matches" user={currentUser} component={Lobby}/>
         <AuthenticatedRoute exact path="/matches/new" user={currentUser} component={Matchmaking}/>
         <AuthenticatedRoute exact path="/matches/:id" user={currentUser} component={Match}/>
         <Route exact path="/">
-          <Redirect to="/matches/new"/>
+          <Redirect to="/matches"/>
         </Route>
         <Route exact path="/users/new">
           <RegistrationForm user={currentUser}/>

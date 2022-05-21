@@ -1,0 +1,33 @@
+.MatchTile {
+  border-radius: 5px;
+  background-color: $black;
+  margin: 5px 0;
+
+  .matchTile-body {
+    padding: 10px;
+
+    .red {
+      color: $red;
+    }
+
+    .white {
+      color: white;
+    }
+
+    h3, p {
+      margin: 0;
+      padding: 0;
+      color: $light-grey;
+    }
+  }
+
+  &:hover {
+    background-color: $light-grey;
+
+    .matchTile-body {
+      h3, p {
+        color: $black;
+      }
+    }
+  }
+}

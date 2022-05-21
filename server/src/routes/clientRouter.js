@@ -4,7 +4,7 @@ import getClientIndexPath from "../config/getClientIndexPath.js";
 const router = new express.Router();
 
 const clientRoutes = ["/", "/user-sessions/new", "/users/new", "/leaderboard"];
-const authedClientRoutes = ["/matches/new", "/matches/:id", "/profile"];
+const authedClientRoutes = ["/matches", "/matches/new", "/matches/:id", "/profile"];
 
 router.get(clientRoutes, (req, res) => {
   res.sendFile(getClientIndexPath());
