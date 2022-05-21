@@ -3,7 +3,7 @@ import Pawn from "./Pawn";
 import itemTypes from "../../constants/itemTypes.js";
 import { useDrag } from "react-dnd";
 
-const DraggablePawn = ({ tileId, color, x, y }) => {
+const DraggablePawn = ({ isKinged, tileId, color, x, y }) => {
   const [{isDragging}, drag] = useDrag(() => ({
     type: itemTypes.PAWN,
     item: {
@@ -18,7 +18,7 @@ const DraggablePawn = ({ tileId, color, x, y }) => {
   }))
 
   return (
-    <Pawn color={color} drag={drag} isDragging={isDragging}/>
+    <Pawn isKinged={isKinged} color={color} drag={drag} isDragging={isDragging}/>
   )
 }
 

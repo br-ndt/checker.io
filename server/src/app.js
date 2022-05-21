@@ -130,6 +130,8 @@ io.on("connection", (socket) => {
           if (match.player2 === "None" && match.player1.id !== user.userModel.id) {
             match.player2 = await joinMatch(user.userModel.id, match.id);
             if (match.player2) {
+              match.player2 = user.userModel;
+              socket.in(matchRoom).emit("opponentJoin", match);
               io.in(matchRoom).emit("notification", {
                 title: "A challenger approaches",
                 description: `${user.userModel.username} is now the Red Player`,
@@ -144,13 +146,17 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("playerMovesPawn", async (roomId, user, match, callback) => {
+  socket.on("playerMovesPawn", async (roomId, user, fromTile, toTile, pawn, callback) => {
     try {
-      const newMatchState = await movePawn(socket.id, roomId, user, match);
-      if(newMatchState) {
+      const newMatchState = await movePawn(socket.id, roomId, user, fromTile, toTile, pawn);
+      if (newMatchState) {
         io.in(roomId).emit("boardUpdate", newMatchState);
+        io.in(roomId).emit("notification", {
+          title: `A Player made a move`,
+          description: `${user.username} moved a Pawn from (${fromTile.x},${fromTile.y}) to (${toTile.x},${toTile.y})`,
+        });
         callback("Board was updated");
-      }   
+      }
     } catch (error) {
       console.error(error);
     }
