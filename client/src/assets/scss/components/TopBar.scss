@@ -18,8 +18,9 @@
       li {
         display: none;
   
-        &.app-title, &.menu-button {
+        &.app-title, &.menu-button, &.new-match {
           display: list-item;
+          padding: 0;
         }
       }
   
@@ -91,10 +92,7 @@
 
   .top-bar-right {
     .menu {
-      flex-direction: row-reverse;
-      @include for-tablet-portrait-up {
-        flex-direction: row;
-      }
+      justify-content: flex-end;
     }
   }
 }

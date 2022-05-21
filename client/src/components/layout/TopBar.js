@@ -21,11 +21,16 @@ const TopBar = ({ user }) => {
     </li>
   ];
 
+  const newMatch = user ? (
+    <li className="menu-text new-match"><Link to="/matches/new">New Match</Link></li>
+  ) : null;
+
   return (
     <div className="top-bar TopBar">
       <div className="top-bar-left">
         <ul className="menu">
-          <li className="menu-text app-title"><Link to="/matches/new">checker.io</Link></li>
+          <li className="menu-text app-title"><Link to="/matches">checker.io</Link></li>
+          {newMatch}
         </ul>
       </div>
       <div className="top-bar-right">

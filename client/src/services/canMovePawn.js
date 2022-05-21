@@ -1,11 +1,26 @@
-const canMovePawn = (startPos, endPos) => {
-  if (endPos.pawn) {
+const canMovePawn = (middleTile, endTile, dx, dy, movedPawnColor) => {
+  if (endTile.pawn) {
     return false;
   }
-  const dx = endPos.x - startPos.x;
-  const dy = endPos.y - startPos.y;
+  if(movedPawnColor === "white" && dy > 0) {
+    return false;
+  } else if(movedPawnColor === "red" && dy < 0) {
+    return false;
+  }
 
-  return Math.abs(dx) === 1 && Math.abs(dy) === 1;
+  const absX = Math.abs(dx);
+  const absY = Math.abs(dy);
+  if (
+    absX === 2 &&
+    absY === 2 &&
+    middleTile.pawn &&
+    middleTile.pawn.color &&
+    middleTile.pawn.color !== movedPawnColor
+  ) {
+    return true;
+  }
+
+  return absX === 1 && absY === 1;
 };
 
 export default canMovePawn;

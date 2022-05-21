@@ -23,24 +23,3 @@ export const generateBoard = async (matchId) => {
   }
   return serializedBoard;
 };
-
-export const updateBoard = async (matchId, newBoard) => {
-  try {
-    const board = await Board.query().findOne({ matchId });
-    for (let i = 0; i < 8; ++i) {
-      for (let j = 0; j < 8; ++j) {
-        const pawnHere = newBoard.rows[i][j].pawn;
-        if (pawnHere) {
-          const oldTile = await board.$relatedQuery("tiles").findById(pawnHere.tileId);
-          const newTile = await board.$relatedQuery("tiles").findOne({ x: j+1, y: i+1 });
-          const pawn = await oldTile.$relatedQuery("pawn");
-          if(pawn) await pawn.$query().patchAndFetchById(pawn.id, { tileId: newTile.id });
-        }
-      }
-    }
-    const serializedBoard = await BoardSerializer.getFullBoard(board);
-    return serializedBoard;
-  } catch (error) {
-    console.error(error);
-  }
-};

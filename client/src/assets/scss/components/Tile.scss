@@ -5,6 +5,14 @@
   color: $light-grey;
   position: relative;
 
+  .tileLoc {
+    position: absolute;
+    left: 2px;
+    bottom: 2px;
+    margin: 0;
+    opacity: 0.5;
+  }
+
   @include for-tablet-portrait-up {
     width: 60px;
     height: 60px;
