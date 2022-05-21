@@ -6,7 +6,11 @@ Bootstrapped using [Launch Academy's Engage](https://github.com/LaunchAcademy/ge
 
 ## Installation
 
-This will require your system to have an installation of Postgres/PSQL of v14 or higher.
+Your system must have an installation of Postgres/PSQL of v14 or higher.
+You will need to create a `.env` file in the `server` directory, containing the following field:
+`SESSION_SECRET: "[INSERT ANY STRING]"`
+
+Then:
 
 ```
 createdb checker.io_development
