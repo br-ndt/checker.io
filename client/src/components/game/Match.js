@@ -45,6 +45,10 @@ const Match = ({ socket, user }) => {
     socket.emit("userJoinMatchRoom", user.id, id, (data) => {
       setMatch(data);
     });
+
+    return () => {
+      socket.emit("userLeftMatchRoom", user.id);
+    }
   }, []);
 
   const getTile = (x, y) => {

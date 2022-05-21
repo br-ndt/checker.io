@@ -1,0 +1,16 @@
+.Profile {
+  color: $light-grey;
+  padding: 20px 0;
+  flex: 2 0 0%;
+  
+  .profile-body {
+    border-radius: 5px;
+    background-color: $black;
+    margin: 5px 20px;
+    padding: 10px;
+  }
+
+  h3 {
+    margin: 0;
+  }
+}

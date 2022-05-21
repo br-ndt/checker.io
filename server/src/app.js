@@ -13,12 +13,13 @@ import { Server } from "socket.io";
 import hbsMiddleware from "express-handlebars";
 import {
   addUser,
-  addUserToMatchRoom,
+  addUserToRoom,
   getUser,
   deleteUser,
   getUsers,
   getUsersInRoom,
   removeUserFromRoom,
+  getRoomList,
 } from "./services/users.js";
 import { createMatch, getMatch, joinMatch } from "./services/matchmaking.js";
 import { movePawn } from "./services/game.js";
@@ -99,6 +100,12 @@ io.on("connection", (socket) => {
     }
   });
 
+  socket.on("enterLobby", async (callback) => {
+    socket.join("lobby");
+    const roomList = await getRoomList();
+    callback(roomList);
+  });
+
   socket.on("createMatch", async (user, callback) => {
     try {
       const matchId = await createMatch(getUser(user.id));
@@ -115,17 +122,21 @@ io.on("connection", (socket) => {
     try {
       const user = getUser(id);
       if (user) {
-        const matchRoom = await addUserToMatchRoom(user, room);
+        const matchRoom = await addUserToRoom(user, room);
         if (matchRoom) {
           console.log(
             `${user.userModel.username}-${user.socketId}-${user.userModel.id} successfully joined room ${matchRoom}`
           );
+          socket.leave("lobby");
           socket.join(matchRoom);
           io.in(matchRoom).emit("notification", {
             title: "A user has joined",
             description: `${user.userModel.username} just entered the room`,
           });
           io.in(matchRoom).emit("getUsers", getUsersInRoom(room), `room ${room}`);
+          const roomList = await getRoomList();
+          io.in("lobby").emit("getMatches", roomList);
+
           const match = await getMatch(matchRoom);
           if (match.player2 === "None" && match.player1.id !== user.userModel.id) {
             match.player2 = await joinMatch(user.userModel.id, match.id);
@@ -145,6 +156,18 @@ io.on("connection", (socket) => {
       console.error(error);
     }
   });
+
+  socket.on("userLeftMatchRoom", async (id) => {
+    const user = getUser(id);
+    if(user) {
+      if(removeUserFromRoom(user)) {
+        console.log(`${user.userModel.username} has left a room`);
+        const roomList = await getRoomList();
+        io.in("lobby").emit("getMatches", roomList);
+      }
+
+    }
+  })
 
   socket.on("playerMovesPawn", async (roomId, user, fromTile, toTile, pawn, callback) => {
     try {
@@ -167,7 +190,7 @@ io.on("connection", (socket) => {
     io.in(user.room).emit("message", { user: user.name, text: message });
   });
 
-  socket.on("disconnect", () => {
+  socket.on("disconnect", async () => {
     console.log("A socket disconnected", socket.id);
     const user = deleteUser(socket.id);
     const prevRoom = removeUserFromRoom(user);
@@ -180,6 +203,8 @@ io.on("connection", (socket) => {
         description: `${user.userModel.username} just left the room`,
       });
       io.in(prevRoom).emit("getUsers", getUsers(prevRoom), `room ${prevRoom}`);
+      const roomList = await getRoomList();
+      io.in("lobby").emit("getMatches", roomList);
     }
   });
 });
