@@ -1,6 +1,6 @@
 class PawnSerializer {
   static async getSummary(pawn) {
-    const allowedAttributes = ["tileId", "color"];
+    const allowedAttributes = ["tileId", "color", "isKinged"];
     let serializedPawn = {};
     for(const attribute of allowedAttributes) {
       serializedPawn[attribute] = pawn[attribute];

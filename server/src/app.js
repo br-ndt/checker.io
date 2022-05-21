@@ -149,10 +149,14 @@ io.on("connection", (socket) => {
   socket.on("playerMovesPawn", async (roomId, user, fromTile, toTile, pawn, callback) => {
     try {
       const newMatchState = await movePawn(socket.id, roomId, user, fromTile, toTile, pawn);
-      if(newMatchState) {
+      if (newMatchState) {
         io.in(roomId).emit("boardUpdate", newMatchState);
+        io.in(roomId).emit("notification", {
+          title: `A Player made a move`,
+          description: `${user.username} moved a Pawn from (${fromTile.x},${fromTile.y}) to (${toTile.x},${toTile.y})`,
+        });
         callback("Board was updated");
-      }   
+      }
     } catch (error) {
       console.error(error);
     }

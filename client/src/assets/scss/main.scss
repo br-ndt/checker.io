@@ -46,6 +46,7 @@ html, body {
 }
 
 $pawn-img: url("../images/pawn_overlay.png");
+$king-img: url("../images/king_overlay.png");
 @import "./components/Authentication.scss";
 @import "./components/Board.scss";
 @import "./components/BoardRow.scss";

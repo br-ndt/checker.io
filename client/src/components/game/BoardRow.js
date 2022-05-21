@@ -1,11 +1,16 @@
 import React from "react";
 import Tile from "./Tile";
 
-const BoardRow = ({ row, movePawnCallback, clientColor, isClientsTurn }) => {
-  return row.map(tile => {
+const BoardRow = ({ row, getTileCallback, movePawnCallback, clientColor, isClientsTurn }) => {
+  let printRow = row;
+  if(clientColor === "red") {
+    printRow = row.slice().reverse();
+  }
+  return printRow.map(tile => {
     return (
       <Tile
         key={`tile-${tile.x}-${tile.y}`}
+        getTileCallback={getTileCallback}
         movePawnCallback={movePawnCallback}
         x={tile.x}
         y={tile.y}

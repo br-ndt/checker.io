@@ -1,4 +1,5 @@
 .Pawn {
+  z-index: 1;
   width: 32px;
   height: 32px;
   border-radius: 100%;
@@ -42,7 +43,14 @@
   }
 
   .img-overlay {
-    background-image: $pawn-img;
+    &.pawn {
+      background-image: $pawn-img;
+    }
+
+    &.king {
+      background-image: $king-img;
+    }
+
     width: 100%;
     height: 100%;
     margin: 0;
