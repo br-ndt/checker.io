@@ -209,7 +209,7 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(configuration.web.port, (error) => {
+server.listen(configuration.web.port, configuration.web.host, (error) => {
   if (error) console.log(error);
   console.log(`Server listening on port ${configuration.web.port}`);
 });
