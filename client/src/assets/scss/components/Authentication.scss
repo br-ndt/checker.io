@@ -10,7 +10,18 @@
   input {
     border-radius: 5px;
     background-color: $black;
-    color: white;
+    
+    &:-webkit-autofill,
+    &:-webkit-autofill:hover, 
+    &:-webkit-autofill:focus, 
+    &:-webkit-autofill:active,
+    &:-webkit-autofill::first-line,
+    &:-internal-autofill-selected {
+      font-family: $mono !important;
+      transition: background-color 0s ease-in-out 60000s;
+      -webkit-transition: all 0s ease-in-out 60000s;
+      -webkit-text-fill-color: white !important;
+    }
 
     &[type=submit]:hover {
       background-color: $light-grey;
