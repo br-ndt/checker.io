@@ -16,14 +16,14 @@ export const getRoomList = async () => {
         .findOne({ playerColor: "white" });
       if (matchPlayer1) {
         const player1 = await matchPlayer1.$relatedQuery("user");
-        if (player1) thisRoom.player1 = UserSerializer.getSummary(player1);
+        if (player1) thisRoom.player1 = await UserSerializer.getSummary(player1);
       }
       const matchPlayer2 = await thisMatch
         .$relatedQuery("matchPlayers")
         .findOne({ playerColor: "red" });
       if (matchPlayer2) {
         const player2 = await matchPlayer2.$relatedQuery("user");
-        if (player2) thisRoom.player2 = UserSerializer.getSummary(player2);
+        if (player2) thisRoom.player2 = await UserSerializer.getSummary(player2);
       }
       roomList.push(thisRoom);
     }

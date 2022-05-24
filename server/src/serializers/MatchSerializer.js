@@ -9,8 +9,8 @@ class MatchSerializer {
       serializedMatch[attribute] = match[attribute];
     }
     serializedMatch.board = await BoardSerializer.getFullBoard(await match.$relatedQuery("board"));
-    serializedMatch.player1 = UserSerializer.getSummary((await match.$relatedQuery('players'))[0]);
-    serializedMatch.player2 = UserSerializer.getSummary((await match.$relatedQuery('players'))[1]);
+    serializedMatch.player1 = await UserSerializer.getSummary((await match.$relatedQuery('players'))[0]);
+    serializedMatch.player2 = await UserSerializer.getSummary((await match.$relatedQuery('players'))[1]);
     return serializedMatch;
   }
 
