@@ -57,7 +57,7 @@ class User extends uniqueFunc(Model) {
             from: "matchPlayers.userId",
             to: "matchPlayers.matchId",
           },
-          to: "matchPlayers.userId",
+          to: "matches.id",
         },
       },
       matchPlayers: {

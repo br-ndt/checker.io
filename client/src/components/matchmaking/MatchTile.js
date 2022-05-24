@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const MatchTile = ({ match }) => {
-  const matchDetails = match.player2 ? (
+  const matchDetails = match.player2 && match.player2 !== "None" ? (
     <p className="matchDetails">
       <span className="white">{match.player1.username}</span> vs {""}
       <span className="red">{match.player2.username}</span>
