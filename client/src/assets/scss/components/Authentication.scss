@@ -10,6 +10,7 @@
   input {
     border-radius: 5px;
     background-color: $black;
+    color: white;
     
     &:-webkit-autofill,
     &:-webkit-autofill:hover, 
@@ -31,7 +32,7 @@
       background-color: $black;
     }
 
-    &:focus, &:-internal-autofill-selected {
+    &:focus {
       background-color: $black;
       color: white;
     }
