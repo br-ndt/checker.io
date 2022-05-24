@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
 
 const Profile = ({ socket, user }) => {
+  const winRate = (user.wins / user.losses).toPrecision(2);
   return (
     <div className="Profile">
       <div className="profile-body">
         <h3>{user.username}</h3>
         <hr/>
-        <p>Wins: 73</p>
-        <p>Losses: 58</p>
-        <p>Winrate: 55.7%</p>
+        <p>Wins: {user.wins}</p>
+        <p>Losses: {user.losses}</p>
+        <p>Winrate: {winRate}%</p>
       </div>
     </div>
   )
