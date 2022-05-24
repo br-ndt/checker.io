@@ -12,10 +12,22 @@ class Pawn extends Model {
         modelClass: require("./Tile.js"),
         join: {
           from: "pawns.tileId",
-          to: "tiles.id"
-        }
-      }
-    }
+          to: "tiles.id",
+        },
+      },
+      board: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: require("./Board.js"),
+        join: {
+          from: "pawns.tileId",
+          through: {
+            from: "tiles.id",
+            to: "tiles.boardId",
+          },
+          to: "boards.id",
+        },
+      },
+    };
   }
 }
 

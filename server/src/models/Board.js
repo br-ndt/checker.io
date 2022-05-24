@@ -23,6 +23,18 @@ class Board extends Model {
           to: "matches.id",
         },
       },
+      pawns: {
+        relation: Model.HasManyRelation,
+        modelClass: require("./Pawn.js"),
+        join: {
+          from: "boards.id",
+          through: {
+            from: "tiles.boardId",
+            to: "tiles.id"
+          },
+          to: "pawns.tileId"
+        }
+      }
     };
   }
 }

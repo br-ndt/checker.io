@@ -56,6 +56,7 @@ export const movePawn = async (socketId, roomId, user, fromTile, toTile) => {
               .$relatedQuery("tiles")
               .findOne({ x: jumpedX, y: jumpedY });
             await jumpedTile.$relatedQuery("pawn").delete();
+            checkGameIsEnded();
             changeTurn = false;
           }
 
@@ -76,3 +77,7 @@ export const movePawn = async (socketId, roomId, user, fromTile, toTile) => {
     console.error(error);
   }
 };
+
+const checkGameIsEnded = () => {
+  
+}

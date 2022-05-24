@@ -9,7 +9,7 @@ exports.up = async (knex) => {
   return knex.schema.createTable("matches", (t) => {
     t.bigIncrements("id");
     t.boolean("isFinished").notNullable();
-    t.string("winner");
+    t.bigInteger("winnerId").unsigned().index().references("users.id");
     t.boolean("isRedsTurn").notNullable();
     t.timestamp("createdAt").notNullable().defaultTo(knex.fn.now());
     t.timestamp("updatedAt").notNullable().defaultTo(knex.fn.now());
