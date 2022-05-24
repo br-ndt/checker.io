@@ -6,9 +6,9 @@ import getCurrentUser from "../services/getCurrentUser";
 import RegistrationForm from "./registration/RegistrationForm";
 import SignInForm from "./authentication/SignInForm";
 import TopBar from "./layout/TopBar";
-import Lobby from "./Lobby";
+import Lobby from "./matchmaking/Lobby";
 import Match from "./game/Match";
-import Matchmaking from "./Matchmaking";
+import Matchmaking from "./matchmaking/Matchmaking";
 
 import "../assets/scss/main.scss";
 

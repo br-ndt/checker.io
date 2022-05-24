@@ -70,7 +70,7 @@ export const addUser = async (socket) => {
     session.socketId = socket.id;
     const cachedUser = getUser(session.user);
     if (!cachedUser) {
-      const userModel = UserSerializer.getSummary(await User.query().findById(session.user));
+      const userModel = await UserSerializer.getSummary(await User.query().findById(session.user));
       const user = { userModel, socketId: socket.id };
       users.push(user);
       return user;

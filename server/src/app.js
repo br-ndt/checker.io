@@ -21,8 +21,9 @@ import {
   removeUserFromRoom,
   getRoomList,
 } from "./services/users.js";
-import { createMatch, getMatch, joinMatch } from "./services/matchmaking.js";
+import { createMatch, getMatch, getUserMatches, joinMatch } from "./services/matchmaking.js";
 import { movePawn } from "./services/game.js";
+import User from "./models/User.js";
 
 const __filename = fileURLToPath(import.meta.url);
 
@@ -105,6 +106,13 @@ io.on("connection", (socket) => {
     const roomList = await getRoomList();
     callback(roomList);
   });
+
+  socket.on("getCurrentMatches", async (user, callback) => {
+    const matches = await getUserMatches(getUser(user.id));
+    if(matches) {
+      callback(matches);
+    }
+  })
 
   socket.on("createMatch", async (user, callback) => {
     try {

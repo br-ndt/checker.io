@@ -13,4 +13,18 @@
   h3 {
     margin: 0;
   }
+
+  ul {
+    padding: 20px 0;
+    margin: 0 20px;
+    list-style: none;
+
+    .MatchTile {
+      background-color: $dark-grey;
+
+      &:hover {
+        background-color: $light-grey;
+      }
+    }
+  }
 }

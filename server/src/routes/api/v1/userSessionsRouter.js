@@ -23,7 +23,7 @@ sessionRouter.post("/", (req, res, next) => {
 
 sessionRouter.get("/current", async (req, res) => {
   if (req.user) {
-    const serializedUser = UserSerializer.getSummary(req.user);
+    const serializedUser = await UserSerializer.getSummary(req.user);
     res.status(200).json(serializedUser);
   } else {
     res.status(401).json(undefined);
