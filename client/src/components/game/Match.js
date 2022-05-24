@@ -48,31 +48,19 @@ const Match = ({ socket, user }) => {
 
     return () => {
       socket.emit("userLeftMatchRoom", user.id);
-    }
+    };
   }, []);
 
   const getBoardTiles = () => {
     return match.board.rows;
   };
 
+  const getTileCallback = (x, y) => {
+    return getBoardTiles()[y][x];
+  };
+
   const movePawn = (fromTile, toTile, pawn) => {
-    let middleTile;
-    const dx = toTile.x - fromTile.x;
-    const dy = toTile.y - fromTile.y;
-    const absX = Math.abs(dx);
-    const absY = Math.abs(dy);
-    if (absX === 2 && absY === 2) {
-      middleTile = getBoardTiles()[fromTile.y - 1 + dy / 2][fromTile.x - 1 + dx / 2];
-    }
-    if (
-      canDropPawn(
-        toTile.x,
-        toTile.y,
-        pawn,
-        toTile.pawn,
-        getBoardTiles
-      )
-    ) {
+    if (canDropPawn(pawn, toTile, getTileCallback)) {
       socket.emit("playerMovesPawn", id, user, fromTile, toTile, pawn, (data) => {
         console.log(data);
       });
@@ -117,7 +105,7 @@ const Match = ({ socket, user }) => {
   ) : (
     <h4 className="turn-prompt white">Awaiting opponent...</h4>
   );
-  const matchProps = { isClientsTurn, getBoardTiles, movePawn, clientColor };
+  const matchProps = { isClientsTurn, getTileCallback, movePawn, clientColor };
 
   return (
     <div className="Match">
