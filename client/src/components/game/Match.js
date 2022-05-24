@@ -4,7 +4,7 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import Board from "./Board";
 import Chat from "../Chat/Chat";
-import canMovePawn from "../../services/canMovePawn.js";
+import canDropPawn from "../../services/canDropPawn.js";
 
 const defaultBoard = {
   id: "0",
@@ -51,10 +51,8 @@ const Match = ({ socket, user }) => {
     }
   }, []);
 
-  const getTile = (x, y) => {
-    if (match.board.rows[y - 1] && match.board.rows[y - 1][x - 1]) {
-      return match.board.rows[y - 1][x - 1];
-    }
+  const getBoardTiles = () => {
+    return match.board.rows;
   };
 
   const movePawn = (fromTile, toTile, pawn) => {
@@ -64,15 +62,15 @@ const Match = ({ socket, user }) => {
     const absX = Math.abs(dx);
     const absY = Math.abs(dy);
     if (absX === 2 && absY === 2) {
-      middleTile = getTile(fromTile.x + dx / 2, fromTile.y + dy / 2);
+      middleTile = getBoardTiles()[fromTile.y - 1 + dy / 2][fromTile.x - 1 + dx / 2];
     }
     if (
-      canMovePawn(
-        middleTile,
-        toTile,
-        dx,
-        dy,
-        pawn.color
+      canDropPawn(
+        toTile.x,
+        toTile.y,
+        pawn,
+        toTile.pawn,
+        getBoardTiles
       )
     ) {
       socket.emit("playerMovesPawn", id, user, fromTile, toTile, pawn, (data) => {
@@ -119,7 +117,7 @@ const Match = ({ socket, user }) => {
   ) : (
     <h4 className="turn-prompt white">Awaiting opponent...</h4>
   );
-  const matchProps = { isClientsTurn, getTile, movePawn, clientColor };
+  const matchProps = { isClientsTurn, getBoardTiles, movePawn, clientColor };
 
   return (
     <div className="Match">

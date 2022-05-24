@@ -12,9 +12,9 @@ export const generateBoard = async (matchId) => {
       const newTile = await newBoard.$relatedQuery("tiles").insertAndFetch({ x: j, y: i });
       if ((j + i) % 2 === 1) {
         if (i <= 3) {
-          await newTile.$relatedQuery("pawn").insert({ color: "red" });
+          await newTile.$relatedQuery("pawn").insert({ isKinged: false, color: "red" });
         } else if (i >= 6) {
-          await newTile.$relatedQuery("pawn").insert({ color: "white" });
+          await newTile.$relatedQuery("pawn").insert({ isKinged: false, color: "white" });
         }
       }
       thisRow.push(await TileSerializer.getSummary(newTile));

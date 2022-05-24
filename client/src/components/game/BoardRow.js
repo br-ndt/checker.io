@@ -1,7 +1,7 @@
 import React from "react";
 import Tile from "./Tile";
 
-const BoardRow = ({ row, getTileCallback, movePawnCallback, clientColor, isClientsTurn }) => {
+const BoardRow = ({ row, getBoardCallback, movePawnCallback, clientColor, isClientsTurn }) => {
   let printRow = row;
   if(clientColor === "red") {
     printRow = row.slice().reverse();
@@ -10,7 +10,7 @@ const BoardRow = ({ row, getTileCallback, movePawnCallback, clientColor, isClien
     return (
       <Tile
         key={`tile-${tile.x}-${tile.y}`}
-        getTileCallback={getTileCallback}
+        getBoardCallback={getBoardCallback}
         movePawnCallback={movePawnCallback}
         x={tile.x}
         y={tile.y}
