@@ -41,12 +41,16 @@ export const movePawn = async (socketId, roomId, user, fromTile, toTile) => {
           const newTile = await board.$relatedQuery("tiles").findOne({ x: toTile.x, y: toTile.y });
           
           let kingMe = false;
-          if(thisPlayerIsP1 && newTile.y === 1) {
+          const movedPawn = await oldTile.$relatedQuery("pawn");
+          if(movedPawn.isKinged) {
             kingMe = true;
-          } else if(thisPlayerIsP2 && newTile.y === 8) {
+          } else if(thisPlayerIsP1 && newTile.y === 0) {
+            kingMe = true;
+          } else if(thisPlayerIsP2 && newTile.y === 7) {
             kingMe = true;
           }
-          await oldTile.$relatedQuery("pawn").patch({ tileId: newTile.id, isKinged: kingMe });
+
+          await movedPawn.$query().patch({ tileId: newTile.id, isKinged: kingMe });
 
           let changeTurn = true;
           if (absX === 2 && absY === 2) {
@@ -62,9 +66,9 @@ export const movePawn = async (socketId, roomId, user, fromTile, toTile) => {
 
           if (changeTurn) {
             await currentMatch.$query().patch({ isRedsTurn: !currentMatch.isRedsTurn });
-            serializedNewMatch.isRedsTurn = currentMatch.isRedsTurn;
           }
-
+          
+          serializedNewMatch.isRedsTurn = currentMatch.isRedsTurn;
           serializedNewMatch.board = await BoardSerializer.getFullBoard(board);
           return serializedNewMatch;
         } else {

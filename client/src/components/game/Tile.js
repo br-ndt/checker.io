@@ -2,7 +2,7 @@ import React from "react";
 import Pawn from "./Pawn";
 import itemTypes from "../../constants/itemTypes.js";
 import { useDrop } from "react-dnd";
-import canMovePawn from "../../services/canMovePawn";
+import canDropPawn from "../../services/canDropPawn";
 import DraggablePawn from "./DraggablePawn";
 
 const Tile = ({
@@ -21,25 +21,13 @@ const Tile = ({
       accept: itemTypes.PAWN,
       drop: (item) => {
         movePawnCallback(
-          { x: item.x, y: item.y, pawn: true },
-          { x, y, pawn: pawnHere ? true : false },
+          { x: item.x, y: item.y, pawn: item },
+          { x, y, pawn: pawnHere },
           item
         );
       },
       canDrop: (item) => {
-        const dx = x - item.x;
-        const dy = y - item.y;
-        const absX = Math.abs(dx);
-        const absY = Math.abs(dy);
-        const middX = item.x + dx / 2;
-        const middY = item.y + dy / 2;
-        return canMovePawn(
-          absX === 2 && absY === 2 ? getTileCallback(middX, middY) : undefined,
-          { x, y, pawn: pawnHere ? true : false },
-          dx,
-          dy,
-          item.color
-        );
+        return canDropPawn(item, { id, x, y, pawn: pawnHere }, getTileCallback);
       },
       collect: (monitor) => ({
         isOver: !!monitor.isOver(),

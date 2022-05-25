@@ -13,9 +13,9 @@ class BoardSerializer {
   static async getFullBoard(board) {
     let serializedBoard = await this.getSummary(board);
     serializedBoard.rows = [];
-    for (let i = 1; i <= 8; ++i) {
+    for (let i = 0; i < 8; ++i) {
       const thisRow = [];
-      for (let j = 1; j <= 8; ++j) {
+      for (let j = 0; j < 8; ++j) {
         const tile = await board.$relatedQuery("tiles").findOne({ x: j, y: i });
         thisRow.push(await TileSerializer.getSummary(tile));
       }

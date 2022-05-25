@@ -7,7 +7,7 @@ class TileSerializer {
     for(const attribute of allowedAttributes) {
       serializedTile[attribute] = tile[attribute];
     }
-    const pawn = await tile.$relatedQuery("pawn") || null;
+    const pawn = await tile.$relatedQuery("pawn");
     if(pawn) {
       serializedTile.pawn = await PawnSerializer.getSummary(pawn);
     }

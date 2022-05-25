@@ -10,7 +10,8 @@ const DraggablePawn = ({ isKinged, tileId, color, x, y }) => {
       tileId,
       x,
       y,
-      color
+      color,
+      isKinged
     },
     collect: monitor => ({
       isDragging: !!monitor.isDragging()
