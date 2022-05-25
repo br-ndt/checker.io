@@ -2,7 +2,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const MatchTile = ({ match, user }) => {
-  console.log(user);
   const matchStar = match.winner && match.winner.username === user.username ? <span className="gold">*</span> : "";
   const winnerMessage = match.winner ? <h5 className={`${match.winnerColor}`}>Winner: {matchStar}{match.winner.username}{matchStar}</h5> : "";
 
