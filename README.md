@@ -1,8 +1,10 @@
-# checker.io
+<img src="https://github.com/br-ndt/checker.io/blob/main/images/app-title.png" width="200">
 
 A WebSocket-based, React rendition of the classic head-to-head board game.
 
 Bootstrapped using [Launch Academy's Engage](https://github.com/LaunchAcademy/generator-engage)
+
+<img src="https://github.com/br-ndt/checker.io/blob/main/images/Board.png" width="300">
 
 ## Installation
 
