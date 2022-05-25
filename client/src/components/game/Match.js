@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import Board from "./Board";
 import Chat from "../Chat/Chat";
-import canMovePawn from "../../services/canMovePawn.js";
+import canDropPawn from "../../services/canDropPawn.js";
 
 const defaultBoard = {
   id: "0",
@@ -28,6 +28,8 @@ const Match = ({ socket, user }) => {
     isRedsTurn: true,
     board: defaultBoard,
   });
+  const boardRef = useRef();
+  boardRef.current = match.board;
 
   useEffect(() => {
     socket.on("opponentJoin", (data) => {
@@ -48,33 +50,19 @@ const Match = ({ socket, user }) => {
 
     return () => {
       socket.emit("userLeftMatchRoom", user.id);
-    }
+    };
   }, []);
 
-  const getTile = (x, y) => {
-    if (match.board.rows[y - 1] && match.board.rows[y - 1][x - 1]) {
-      return match.board.rows[y - 1][x - 1];
-    }
+  const getBoardTiles = () => {
+    return boardRef.current.rows;
+  };
+
+  const getTileCallback = (x, y) => {
+    return getBoardTiles()[y][x];
   };
 
   const movePawn = (fromTile, toTile, pawn) => {
-    let middleTile;
-    const dx = toTile.x - fromTile.x;
-    const dy = toTile.y - fromTile.y;
-    const absX = Math.abs(dx);
-    const absY = Math.abs(dy);
-    if (absX === 2 && absY === 2) {
-      middleTile = getTile(fromTile.x + dx / 2, fromTile.y + dy / 2);
-    }
-    if (
-      canMovePawn(
-        middleTile,
-        toTile,
-        dx,
-        dy,
-        pawn.color
-      )
-    ) {
+    if (canDropPawn(pawn, toTile, getTileCallback)) {
       socket.emit("playerMovesPawn", id, user, fromTile, toTile, pawn, (data) => {
         console.log(data);
       });
@@ -119,7 +107,7 @@ const Match = ({ socket, user }) => {
   ) : (
     <h4 className="turn-prompt white">Awaiting opponent...</h4>
   );
-  const matchProps = { isClientsTurn, getTile, movePawn, clientColor };
+  const matchProps = { isClientsTurn, getTileCallback, movePawn, clientColor };
 
   return (
     <div className="Match">

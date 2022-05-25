@@ -10,7 +10,7 @@ exports.up = async (knex) => {
     t.bigIncrements("id");
     t.bigInteger("tileId").notNullable().index().unsigned().references("tiles.id");
     t.string("color").notNullable();
-    t.boolean("isKinged").notNullable().defaultTo(false);
+    t.boolean("isKinged").notNullable();
     t.timestamp("createdAt").notNullable().defaultTo(knex.fn.now());
     t.timestamp("updatedAt").notNullable().defaultTo(knex.fn.now());
   })

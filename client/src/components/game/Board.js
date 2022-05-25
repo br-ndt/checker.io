@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import BoardRow from "./BoardRow";
 
-const Board = ({ getTile, movePawn, clientColor, isClientsTurn, rows }) => {
+const Board = ({ getTileCallback, movePawn, clientColor, isClientsTurn, rows }) => {
   let printRows = rows;
   if (clientColor === "red") {
     printRows = rows.slice().reverse();
@@ -12,7 +12,7 @@ const Board = ({ getTile, movePawn, clientColor, isClientsTurn, rows }) => {
         <BoardRow
           index={index}
           row={row}
-          getTileCallback={getTile}
+          getTileCallback={getTileCallback}
           movePawnCallback={movePawn}
           isClientsTurn={isClientsTurn}
           clientColor={clientColor}

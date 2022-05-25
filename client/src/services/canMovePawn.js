@@ -1,21 +1,8 @@
-const canMovePawn = (middleTile, endTile, dx, dy, movedPawnColor) => {
-  if (endTile.pawn) {
-    return false;
-  }
-  if(movedPawnColor === "white" && dy > 0) {
-    return false;
-  } else if(movedPawnColor === "red" && dy < 0) {
-    return false;
-  }
-
-  const absX = Math.abs(dx);
-  const absY = Math.abs(dy);
+const canMovePawn = (absX, absY, middleTile, movedPawn) => {
   if (
-    absX === 2 &&
-    absY === 2 &&
+    middleTile &&
     middleTile.pawn &&
-    middleTile.pawn.color &&
-    middleTile.pawn.color !== movedPawnColor
+    middleTile.pawn.color !== movedPawn.color
   ) {
     return true;
   }
