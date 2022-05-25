@@ -24,7 +24,7 @@ class Board extends Model {
         },
       },
       pawns: {
-        relation: Model.HasManyRelation,
+        relation: Model.ManyToManyRelation,
         modelClass: require("./Pawn.js"),
         join: {
           from: "boards.id",

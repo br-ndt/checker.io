@@ -37,7 +37,9 @@ export const getUserMatches = async (thisUser) => {
       const userModel = await User.query().findById(thisUser.userModel.id);
       const matches = await userModel.$relatedQuery("matches");
       const serializedMatches = await Promise.all(
-        matches.map(async (match) => {
+        matches.sort((matchA, matchB) => {
+          return matchB.updatedAt - matchA.updatedAt;
+        }).map(async (match) => {
           const serializedMatch = await MatchSerializer.getRoomInfo(match);
           return serializedMatch;
         })

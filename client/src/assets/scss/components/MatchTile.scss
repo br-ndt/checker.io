@@ -3,6 +3,10 @@
   background-color: $black;
   margin: 5px 0;
 
+  .scratchout {
+    text-decoration: line-through;
+  }
+
   .matchTile-body {
     padding: 10px;
 

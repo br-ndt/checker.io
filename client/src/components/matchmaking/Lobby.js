@@ -4,7 +4,6 @@ import Profile from "./Profile";
 
 const Lobby = ({ socket, user }) => {
   const [matchList, setMatchList] = useState([]);
-  const [recentMatches, setRecentMatches] = useState([]);
 
   useEffect(() => {
     socket.on("getMatches", (data) => {
