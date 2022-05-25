@@ -6,15 +6,16 @@ const Profile = ({ socket, user }) => {
 
   useEffect(() => {
     socket.emit("getCurrentMatches", user, (data) => {
-      console.log(data);
       setMatches(data);
     });
   }, []);
 
   let winRate = 0;
-  if (user.losses > 0) {
-    if (user.wins > 0) winRate = (100 * (user.wins / (user.wins + user.losses))).toPrecision(3);
-  } else if (user.wins > 0) {
+  const wins = parseInt(user.wins);
+  const losses = parseInt(user.losses);
+  if (losses > 0) {
+    if (wins > 0) winRate = (100 * (wins / (wins + losses))).toPrecision(3);
+  } else if (wins > 0) {
     winRate = 100;
   }
 

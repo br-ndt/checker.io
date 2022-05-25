@@ -69,6 +69,10 @@ const Match = ({ socket, user }) => {
     }
   };
 
+  const gameMessage = match.winner ? (
+    <h3 className={`game-message ${match.winner.color}`}>{match.winner.username} wins the game!</h3>
+  ) : null;
+
   const clientColor =
     user.id === match.player1.id ? "white" : user.id === match.player2.id ? "red" : "";
 
@@ -100,14 +104,14 @@ const Match = ({ socket, user }) => {
     }
   }
 
-  const turnPrompt = isClientsTurn ? (
+  const turnPrompt = match.winner ? null : isClientsTurn ? (
     <h4 className={`turn-prompt ${clientColor}`}>It's your turn!</h4>
   ) : match.player2.id ? (
     <h4 className={`turn-prompt ${opponentColor}`}>{opponentName} is taking their turn...</h4>
   ) : (
     <h4 className="turn-prompt white">Awaiting opponent...</h4>
   );
-  const matchProps = { isClientsTurn, getTileCallback, movePawn, clientColor };
+  const matchProps = { isClientsTurn, getTileCallback, movePawn, clientColor, gameMessage };
 
   return (
     <div className="Match">
