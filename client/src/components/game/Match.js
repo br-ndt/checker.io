@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
@@ -28,6 +28,8 @@ const Match = ({ socket, user }) => {
     isRedsTurn: true,
     board: defaultBoard,
   });
+  const boardRef = useRef();
+  boardRef.current = match.board;
 
   useEffect(() => {
     socket.on("opponentJoin", (data) => {
@@ -52,7 +54,7 @@ const Match = ({ socket, user }) => {
   }, []);
 
   const getBoardTiles = () => {
-    return match.board.rows;
+    return boardRef.current.rows;
   };
 
   const getTileCallback = (x, y) => {

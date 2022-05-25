@@ -44,9 +44,9 @@ export const movePawn = async (socketId, roomId, user, fromTile, toTile) => {
           const movedPawn = await oldTile.$relatedQuery("pawn");
           if(movedPawn.isKinged) {
             kingMe = true;
-          } else if(thisPlayerIsP1 && newTile.y === 1) {
+          } else if(thisPlayerIsP1 && newTile.y === 0) {
             kingMe = true;
-          } else if(thisPlayerIsP2 && newTile.y === 8) {
+          } else if(thisPlayerIsP2 && newTile.y === 7) {
             kingMe = true;
           }
 

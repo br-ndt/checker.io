@@ -2,7 +2,6 @@ import canMovePawn from "./canMovePawn.js";
 
 const canDropPawn = (droppingPawn, dropzoneTile, getTileCallback) => {
   if (dropzoneTile.pawn) {
-    console.log("occupied");
     return false;
   }
   const dx = dropzoneTile.x - droppingPawn.x;
@@ -19,14 +18,12 @@ const canDropPawn = (droppingPawn, dropzoneTile, getTileCallback) => {
   
   const absX = Math.abs(dx);
   const absY = Math.abs(dy);
-  console.log("endTile", dropzoneTile);
 
   let middTile;
   if(absX === 2 && absY === 2) {
     const middX = droppingPawn.x + dx / 2;
     const middY = droppingPawn.y + dy / 2;
-    middTile = getTileCallback(middX - 1, middY - 1);
-    console.log("middTile", middTile);
+    middTile = getTileCallback(middX, middY);
   }
 
   return canMovePawn(
