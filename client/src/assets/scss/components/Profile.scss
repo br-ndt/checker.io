@@ -14,7 +14,9 @@
     margin: 0;
   }
 
-  ul {
+  ul.recent-matches {
+    max-height: 360px;
+    overflow-y: scroll;
     padding: 20px 0;
     margin: 0 20px;
     list-style: none;

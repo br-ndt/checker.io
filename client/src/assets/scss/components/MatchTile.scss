@@ -3,12 +3,17 @@
   background-color: $black;
   margin: 5px 0;
 
-  .scratchout {
-    text-decoration: line-through;
-  }
-
   .matchTile-body {
     padding: 10px;
+
+    .scratchout {
+      text-decoration: line-through;
+      text-decoration-color: $light-grey;
+    }
+
+    .gold {
+      color: $gold;
+    }
 
     .red {
       color: $red;
@@ -22,6 +27,7 @@
       margin: 0;
       padding: 0;
       color: $light-grey;
+      display: inline-block;
     }
   }
 

@@ -23,6 +23,7 @@ import {
 } from "./services/users.js";
 import { createMatch, getMatch, getUserMatches, joinMatch } from "./services/matchmaking.js";
 import { movePawn } from "./services/game.js";
+import User from "./models/User.js";
 
 const __filename = fileURLToPath(import.meta.url);
 
@@ -108,10 +109,18 @@ io.on("connection", (socket) => {
 
   socket.on("getCurrentMatches", async (user, callback) => {
     const matches = await getUserMatches(getUser(user.id));
-    if(matches) {
+    if (matches) {
       callback(matches);
     }
-  })
+  });
+
+  socket.on("getUserStats", async (user, callback) => {
+    const userModel = await User.query().findById(user.id);
+    const thisUser = getUser(user.id);
+    thisUser.userModel.wins = userModel.wins;
+    thisUser.userModel.losses = userModel.losses;
+    callback({ wins: thisUser.userModel.wins, losses: thisUser.userModel.losses });
+  });
 
   socket.on("createMatch", async (user, callback) => {
     try {
@@ -166,15 +175,14 @@ io.on("connection", (socket) => {
 
   socket.on("userLeftMatchRoom", async (id) => {
     const user = getUser(id);
-    if(user) {
-      if(removeUserFromRoom(user)) {
+    if (user) {
+      if (removeUserFromRoom(user)) {
         console.log(`${user.userModel.username} has left a room`);
         const roomList = await getRoomList();
         io.in("lobby").emit("getMatches", roomList);
       }
-
     }
-  })
+  });
 
   socket.on("playerMovesPawn", async (roomId, user, fromTile, toTile, pawn, callback) => {
     try {
