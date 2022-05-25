@@ -23,7 +23,6 @@ import {
 } from "./services/users.js";
 import { createMatch, getMatch, getUserMatches, joinMatch } from "./services/matchmaking.js";
 import { movePawn } from "./services/game.js";
-import User from "./models/User.js";
 
 const __filename = fileURLToPath(import.meta.url);
 
