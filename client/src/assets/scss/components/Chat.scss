@@ -42,6 +42,36 @@
 
     .Chat-body {
       height: calc(100% - 45px);
+
+      ul.messages {
+        list-style: none;
+        margin: 5px;
+
+        p {
+          margin: 0;
+        }
+
+        .notification p, .message p {
+          color: $light-grey;
+
+          span {
+            font-weight: bolder;
+
+            &.red {
+              color: $red;
+            }
+
+            &.white {
+              color: $white;
+            }
+          }
+        }
+
+        .notification p {
+          font-family: $gothic;
+          font-style: italic;
+        }
+      }
     }
 
     .ChatEntry {
