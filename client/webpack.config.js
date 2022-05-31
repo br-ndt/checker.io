@@ -31,6 +31,9 @@ module.exports = {
       title: "Engage",
       template: path.join(__dirname, "public/index.template.html"),
     }),
+    new webpack.DefinePlugin({
+      "process.env.STAGING": JSON.stringify(process.env.STAGING),
+    }),
   ],
   module: {
     rules: [
