@@ -45,7 +45,10 @@
 
       ul.messages {
         list-style: none;
-        margin: 5px;
+        margin: 0;
+        padding: 5px;
+        overflow-y: scroll;
+        max-height: 100%;
 
         p {
           margin: 0;
