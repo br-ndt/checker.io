@@ -27,6 +27,10 @@ html, body {
   background-color: $dark-grey;
 }
 
+#app {
+  position: relative;
+}
+
 .noselect {
   -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none; /* Safari */
@@ -46,7 +50,7 @@ html, body {
   position: absolute;
   z-index: 100;
   width: 100vw;
-  height: 100vh;
+  height: 100%;
   background-color: rgba(0, 0, 0, 0.65);
   color: white;
   text-align: center;

@@ -40,10 +40,6 @@ const Match = ({ socket, user }) => {
       setMatch(data);
     });
 
-    socket.on("notification", (data) => {
-      console.log(`${data.title}: ${data.description}`);
-    });
-
     socket.emit("userJoinMatchRoom", user.id, id, (data) => {
       setMatch(data);
     });
