@@ -200,9 +200,17 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("sendMessage", (message) => {
-    const user = getUser(socket.id);
-    io.in(user.room).emit("message", { user: user.name, text: message });
+  socket.on("sendMessage", async (room, user, message, callback) => {
+    const thisUser = getUser(user.id);
+    if (socket.id === thisUser.socketId) {
+      let color = "grey";
+      const match = await getMatch(room);
+      if (match) {
+        if (match.player1.id === thisUser.userModel.id) color = "white";
+        if (match.player2.id === thisUser.userModel.id) color = "red";
+        io.in(room).emit("newMessage", { user: user.username, text: message, color });
+      }
+    }
   });
 
   socket.on("disconnect", async () => {
