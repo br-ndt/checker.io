@@ -11,7 +11,6 @@ const SocketContext = ({ children, user }) => {
     if (user) {
       let socketTimeout;
       socket.current.emit("addUser", () => {
-        console.log(`User ${user.id} logged in`);
         setMessage("");
         setUserInSocketSesh(true);
       });
@@ -29,7 +28,6 @@ const SocketContext = ({ children, user }) => {
       });
 
       return () => {
-        console.log(socket.current.id, " disconnected");
         if (socketTimeout) clearTimeout(socketTimeout);
         socket.current.disconnect();
       };

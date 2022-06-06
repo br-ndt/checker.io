@@ -64,7 +64,6 @@ const Match = ({ socket, user }) => {
   const movePawn = (fromTile, toTile, pawn) => {
     if (canDropPawn(pawn, toTile, getTileCallback)) {
       socket.emit("playerMovesPawn", id, user, fromTile, toTile, pawn, (data) => {
-        console.log(data);
       });
     }
   };
