@@ -11,19 +11,11 @@ import rootRouter from "./routes/rootRouter.js";
 import http from "http";
 import { Server } from "socket.io";
 import hbsMiddleware from "express-handlebars";
-import {
-  addUser,
-  addUserToRoom,
-  getUser,
-  deleteUser,
-  getUsers,
-  getUsersInRoom,
-  removeUserFromRoom,
-  getRoomList,
-} from "./services/users.js";
-import { createMatch, getMatch, getUserMatches, joinMatch } from "./services/matchmaking.js";
-import { movePawn } from "./services/game.js";
-import User from "./models/User.js";
+import { registerChatHandlers } from "./eventHandlers/registerChatHandlers.js";
+import { registerGameHandlers } from "./eventHandlers/registerGameHandlers.js";
+import { registerMatchHandlers } from "./eventHandlers/registerMatchHandlers.js";
+import { registerUserHandlers } from "./eventHandlers/registerUserHandlers.js";
+import { registerLobbyHandlers } from "./eventHandlers/registerLobbyHandlers.js";
 
 const __filename = fileURLToPath(import.meta.url);
 
@@ -77,160 +69,21 @@ io.use((socket, next) => {
   }
 });
 
-io.on("connection", (socket) => {
+const onConnection = (socket) => {
   if (!socket.request.user) {
     console.log(`Socket ${socket.id} is not associated with any user, closing connection...`);
     socket.disconnect();
     return;
   }
 
-  socket.on("whoami", (callback) => {
-    callback(socket.request.user ? socket.request.user : "");
-  });
+  registerChatHandlers(io, socket);
+  registerGameHandlers(io, socket);
+  registerLobbyHandlers(io, socket);
+  registerMatchHandlers(io, socket);
+  registerUserHandlers(io, socket);
+}
 
-  socket.on("addUser", async (callback) => {
-    try {
-      const user = await addUser(socket);
-      if (user) {
-        console.log("New user connection:", user);
-        io.emit("getUsers", getUsers(), "server-wide");
-        callback();
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  });
-
-  socket.on("enterLobby", async (callback) => {
-    socket.join("lobby");
-    const roomList = await getRoomList();
-    callback(roomList);
-  });
-
-  socket.on("getCurrentMatches", async (user, callback) => {
-    const matches = await getUserMatches(getUser(user.id));
-    if (matches) {
-      callback(matches);
-    }
-  });
-
-  socket.on("getUserStats", async (user, callback) => {
-    const userModel = await User.query().findById(user.id);
-    const thisUser = getUser(user.id);
-    thisUser.userModel.wins = userModel.wins;
-    thisUser.userModel.losses = userModel.losses;
-    callback({ wins: thisUser.userModel.wins, losses: thisUser.userModel.losses });
-  });
-
-  socket.on("createMatch", async (user, callback) => {
-    try {
-      const matchId = await createMatch(getUser(user.id));
-      if (matchId) {
-        console.log(`Match ${matchId} created`);
-        callback(matchId);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  });
-
-  socket.on("userJoinMatchRoom", async (id, room, callback) => {
-    try {
-      const user = getUser(id);
-      if (user) {
-        const matchRoom = await addUserToRoom(user, room);
-        if (matchRoom) {
-          console.log(
-            `${user.userModel.username}-${user.socketId}-${user.userModel.id} successfully joined room ${matchRoom}`
-          );
-          socket.leave("lobby");
-          socket.join(matchRoom);
-          io.in(matchRoom).emit("notification", {
-            title: "A user has joined",
-            description: `${user.userModel.username} just entered the room`,
-          });
-          io.in(matchRoom).emit("getUsers", getUsersInRoom(room), `room ${room}`);
-          const roomList = await getRoomList();
-          io.in("lobby").emit("getMatches", roomList);
-
-          const match = await getMatch(matchRoom);
-          if (match.player2 === "None" && match.player1.id !== user.userModel.id) {
-            match.player2 = await joinMatch(user.userModel.id, match.id);
-            if (match.player2) {
-              match.player2 = user.userModel;
-              socket.in(matchRoom).emit("opponentJoin", match);
-              io.in(matchRoom).emit("notification", {
-                title: "A challenger approaches",
-                description: `${user.userModel.username} is now the Red Player`,
-              });
-            }
-          }
-          callback(match);
-        }
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  });
-
-  socket.on("userLeftMatchRoom", async (id) => {
-    const user = getUser(id);
-    if (user) {
-      if (removeUserFromRoom(user)) {
-        console.log(`${user.userModel.username} has left a room`);
-        const roomList = await getRoomList();
-        io.in("lobby").emit("getMatches", roomList);
-      }
-    }
-  });
-
-  socket.on("playerMovesPawn", async (roomId, user, fromTile, toTile, pawn, callback) => {
-    try {
-      const newMatchState = await movePawn(socket.id, roomId, user, fromTile, toTile, pawn);
-      if (newMatchState) {
-        io.in(roomId).emit("boardUpdate", newMatchState);
-        io.in(roomId).emit("notification", {
-          title: `A Player made a move`,
-          description: `${user.username} moved a Pawn from (${fromTile.x},${fromTile.y}) to (${toTile.x},${toTile.y})`,
-        });
-        callback("Board was updated");
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  });
-
-  socket.on("sendMessage", async (room, user, message, callback) => {
-    const thisUser = getUser(user.id);
-    if (socket.id === thisUser.socketId) {
-      let color = "grey";
-      const match = await getMatch(room);
-      if (match) {
-        if (match.player1.id === thisUser.userModel.id) color = "white";
-        if (match.player2.id === thisUser.userModel.id) color = "red";
-        io.in(room).emit("newMessage", { user: user.username, text: message, color });
-      }
-    }
-  });
-
-  socket.on("disconnect", async () => {
-    console.log("A socket disconnected", socket.id);
-    const user = deleteUser(socket.id);
-    const prevRoom = removeUserFromRoom(user);
-    if (prevRoom) {
-      console.log(
-        `${user.userModel.username}-${user.socketId}-${user.userModel.id} successfully left Room ${prevRoom}.`
-      );
-      io.in(prevRoom).emit("notification", {
-        title: "A user has left",
-        description: `${user.userModel.username} just left the room`,
-      });
-      io.in(prevRoom).emit("getUsers", getUsers(prevRoom), `room ${prevRoom}`);
-      const roomList = await getRoomList();
-      io.in("lobby").emit("getMatches", roomList);
-    }
-  });
-});
+io.on("connection", onConnection);
 
 server.listen(configuration.web.port, configuration.web.host, (error) => {
   if (error) console.log(error);

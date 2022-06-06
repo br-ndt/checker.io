@@ -9,7 +9,7 @@ const Lobby = ({ socket, user }) => {
     socket.on("getMatches", (data) => {
       setMatchList(data);
     });
-
+    
     socket.emit("enterLobby", (data) => {
       setMatchList(data);
     });

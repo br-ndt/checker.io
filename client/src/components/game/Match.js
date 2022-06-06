@@ -40,12 +40,12 @@ const Match = ({ socket, user }) => {
       setMatch(data);
     });
 
-    socket.emit("userJoinMatchRoom", user.id, id, (data) => {
+    socket.emit("userJoinMatchRoom", id, (data) => {
       setMatch(data);
     });
 
     return () => {
-      socket.emit("userLeftMatchRoom", user.id);
+      socket.emit("userLeftMatchRoom");
     };
   }, []);
 
@@ -59,8 +59,7 @@ const Match = ({ socket, user }) => {
 
   const movePawn = (fromTile, toTile, pawn) => {
     if (canDropPawn(pawn, toTile, getTileCallback)) {
-      socket.emit("playerMovesPawn", id, user, fromTile, toTile, pawn, (data) => {
-      });
+      socket.emit("playerMovesPawn", { roomId: id, fromTile, toTile });
     }
   };
 

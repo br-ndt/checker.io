@@ -41,7 +41,7 @@ const Chat = ({ user, socket, room }) => {
   });
 
   const chatEntrySubmit = (message) => {
-    socket.emit("sendMessage", room, user, message, () => {});
+    socket.emit("sendMessage", room, message);
   };
 
   const scrollToBottom = () => {

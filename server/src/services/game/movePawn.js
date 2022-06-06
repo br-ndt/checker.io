@@ -1,24 +1,24 @@
-import { getUser } from "./users.js";
-import { Match, User } from "../models/index.js";
-import MatchSerializer from "../serializers/MatchSerializer.js";
-import BoardSerializer from "../serializers/BoardSerializer.js";
-import UserSerializer from "../serializers/UserSerializer.js";
+import getUser from "../users/getUser.js";
+import { Match, User } from "../../models/index.js";
+import MatchSerializer from "../../serializers/MatchSerializer.js";
+import BoardSerializer from "../../serializers/BoardSerializer.js";
+import UserSerializer from "../../serializers/UserSerializer.js";
+import checkGameIsEnded from "./checkGameIsEnded.js";
 
-export const movePawn = async (socketId, roomId, user, fromTile, toTile) => {
+export default async (socket, roomId, fromTile, toTile) => {
   try {
     const currentMatch = await Match.query().findById(roomId);
     const serializedNewMatch = await MatchSerializer.getRoomInfo(currentMatch);
     if (serializedNewMatch) {
-      const thisUser = getUser(user.id);
-      if (thisUser && thisUser.socketId === socketId) {
+      if (socket.user) {
         const thisPlayerIsP1 =
           serializedNewMatch.player1 &&
           serializedNewMatch.player1 !== "None" &&
-          user.id === serializedNewMatch.player1.id;
+          socket.user.id === serializedNewMatch.player1.id;
         const thisPlayerIsP2 =
           serializedNewMatch.player2 &&
           serializedNewMatch.player2 !== "None" &&
-          user.id === serializedNewMatch.player2.id;
+          socket.user.id === serializedNewMatch.player2.id;
 
         const dx = toTile.x - fromTile.x;
         const dy = toTile.y - fromTile.y;
@@ -67,9 +67,9 @@ export const movePawn = async (socketId, roomId, user, fromTile, toTile) => {
           }
 
           if (gameOver) {
-            await currentMatch.$query().patch({ isFinished: true, winnerId: user.id });
+            await currentMatch.$query().patch({ isFinished: true, winnerId: socket.user.id });
             serializedNewMatch.isFinished = currentMatch.isFinished;
-            const winner = await User.query().findById(user.id);
+            const winner = await User.query().findById(socket.user.id);
             const wins = parseInt(winner.wins) + 1;
             await winner.$query().patchAndFetch({ wins });
             serializedNewMatch.winner = await UserSerializer.getSummary(winner);
@@ -97,20 +97,4 @@ export const movePawn = async (socketId, roomId, user, fromTile, toTile) => {
   } catch (error) {
     console.error(error);
   }
-};
-
-const checkGameIsEnded = async (isRedsTurn, board) => {
-  let gameOver;
-  let pawns;
-
-  if (isRedsTurn) {
-    pawns = await board.$relatedQuery("pawns").where("color", "white");
-  } else {
-    pawns = await board.$relatedQuery("pawns").where("color", "red");
-  }
-  if (pawns.length <= 0) {
-    gameOver = true;
-  }
-
-  return gameOver;
 };

@@ -1,8 +1,8 @@
-import { Board } from "../models/index.js";
-import BoardSerializer from "../serializers/BoardSerializer.js";
-import TileSerializer from "../serializers/TileSerializer.js";
+import { Board } from "../../models/index.js";
+import BoardSerializer from "../../serializers/BoardSerializer.js";
+import TileSerializer from "../../serializers/TileSerializer.js";
 
-export const generateBoard = async (matchId) => {
+export default async (matchId) => {
   const newBoard = await Board.query().insertAndFetch({ width: 8, height: 8, matchId });
   const serializedBoard = await BoardSerializer.getSummary(newBoard);
   serializedBoard.rows = [];

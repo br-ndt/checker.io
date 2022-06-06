@@ -7,7 +7,7 @@ const Matchmaking = ({ socket, user }) => {
 
   useEffect(() => {
     if(user && socket) {
-      socket.emit("createMatch", user, (matchId) => {
+      socket.emit("createMatch", (matchId) => {
         setMatch(matchId);
       })
     } else {

@@ -4,18 +4,14 @@ import MatchTile from "./MatchTile";
 const Profile = ({ socket, user }) => {
   const [matches, setMatches] = useState([]);
   const [userStats, setUserStats] = useState({
-    wins: 0,
-    losses: 0
+    wins: socket.user.wins,
+    losses: socket.user.losses
   })
 
   useEffect(() => {
-    socket.emit("getCurrentMatches", user, (data) => {
+    socket.emit("getCurrentMatches", (data) => {
       setMatches(data);
     });
-
-    socket.emit("getUserStats", user, (data) => {
-      setUserStats(data);
-    })
   }, []);
 
   let winRate = 0;

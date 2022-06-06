@@ -10,7 +10,8 @@ const SocketContext = ({ children, user }) => {
   useEffect(() => {
     if (user) {
       let socketTimeout;
-      socket.current.emit("addUser", () => {
+      socket.current.emit("addUser", (userData) => {
+        socket.current.user = userData;
         setMessage("");
         setUserInSocketSesh(true);
       });
