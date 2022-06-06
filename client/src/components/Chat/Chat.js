@@ -4,12 +4,13 @@ import ChatEntry from "./ChatEntry";
 const Chat = ({ user, socket, room }) => {
   const [messages, setMessages] = useState([]);
   const messageListRef = useRef([]);
+  const messageEndRef = useRef(null);
 
   messageListRef.current = messages;
 
   useEffect(() => {
     socket.on("notification", (data) => {
-      setMessages([...messageListRef.current, { text: data.description}]);
+      setMessages([...messageListRef.current, { text: data.description }]);
     });
 
     socket.on("newMessage", (data) => {
@@ -17,10 +18,14 @@ const Chat = ({ user, socket, room }) => {
     });
   }, []);
 
-  const messageList = messages.map((message) => {
-    if(message.user) {
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages.length])
+
+  const messageList = messages.map((message, index) => {
+    if (message.user) {
       return (
-        <li className="message">
+        <li key={`${message}-${index}`} className="message">
           <p>
             <span className={message.color}>{message.user}</span>: {message.text}
           </p>
@@ -29,24 +34,27 @@ const Chat = ({ user, socket, room }) => {
     } else {
       return (
         <li className="notification">
-          <p>
-            {message.text}
-          </p>
+          <p>{message.text}</p>
         </li>
-      )
+      );
     }
   });
-
-  console.log(messageList);
 
   const chatEntrySubmit = (message) => {
     socket.emit("sendMessage", room, user, message, () => {});
   };
 
+  const scrollToBottom = () => {
+    messageEndRef.current.scrollIntoView({ block: 'start', behavior: "smooth" });
+  };
+
   return (
     <div className="Chat">
       <div className="Chat-body">
-        <ul className="messages">{messageList}</ul>
+        <ul className="messages">
+          {messageList}
+          <div ref={messageEndRef} />
+        </ul>
       </div>
       <ChatEntry chatEntrySubmit={chatEntrySubmit} />
     </div>
